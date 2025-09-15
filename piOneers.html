@@ -1,0 +1,1206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>πOneers - Educational Game</title>
+    <link rel="stylesheet" href="piOneers-styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+        <!-- Name Input Modal -->
+    <div id="name-modal" class="name-modal">
+        <div class="name-modal-content">
+            <h2>🎮 Welcome to πOneers!</h2>
+                <p>Enter your name to start your mathematical journey and track your high scores:</p>
+                <form id="name-form" class="name-form">
+                    <div class="form-group">
+                        <label for="player-name">Your Name:</label>
+                        <input type="text" id="player-name" class="name-input" placeholder="Enter your name..." maxlength="20" required>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" id="name-submit" class="name-submit-btn">Start Playing</button>
+                        <button type="button" id="name-cancel" class="cancel-user-selection-btn">Back</button>
+                    </div>
+                </form>
+        </div>
+    </div>
+
+        <!-- User Selection Modal -->
+        <div id="user-selection-modal" class="user-selection-modal">
+            <div class="user-selection-content">
+                <h2>👥 Select User</h2>
+                <p>Choose a user to continue playing or create a new one:</p>
+                <div id="user-list" class="user-list">
+                    <!-- User list will be populated by JavaScript -->
+                </div>
+                <div class="user-actions">
+                    <button id="create-new-user-btn" class="create-new-user-btn">Create New User</button>
+                    <button id="cancel-user-selection-btn" class="cancel-user-selection-btn">Cancel</button>
+                </div>
+        </div>
+    </div>
+
+
+    <!-- Delete User Modal -->
+    <div id="delete-user-modal" class="user-selection-modal">
+        <div class="user-selection-content">
+            <h2>🗑️ Delete User</h2>
+            <p>Select a user to delete:</p>
+            <div id="delete-user-list" class="user-list">
+                <!-- User list will be populated by JavaScript -->
+            </div>
+            <div class="user-actions">
+                <button id="confirm-delete-user-btn" class="create-new-user-btn confirm-delete-btn" style="display: none;">Confirm Delete</button>
+                <button id="cancel-delete-user-btn" class="create-new-user-btn">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Switch User Modal -->
+    <div id="switch-user-modal" class="user-selection-modal">
+        <div class="user-selection-content">
+            <h2>🔄 Switch User</h2>
+            <p>Select a user to switch to:</p>
+            <div id="switch-user-list" class="user-list">
+                <!-- User list will be populated by JavaScript -->
+            </div>
+            <div class="user-actions">
+                <button id="confirm-switch-user-btn" class="create-new-user-btn" style="display: none;">Switch User</button>
+                <button id="cancel-switch-user-btn" class="cancel-user-selection-btn">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Navigation -->
+        <nav class="navbar">
+            <div class="nav-brand">
+                <h1 class="logo">🎮 πOneers</h1>
+            </div>
+            
+            <div class="nav-main">
+            <div class="nav-links">
+                    <a href="#home" class="nav-link active" data-page="home">
+                        <span class="nav-icon">🏠</span>
+                        <span class="nav-text">Home</span>
+                    </a>
+                    <a href="#lesson" class="nav-link" data-page="lesson">
+                        <span class="nav-icon">📚</span>
+                        <span class="nav-text">Lesson</span>
+                    </a>
+                    <a href="#quizzes" class="nav-link" data-page="quizzes">
+                        <span class="nav-icon">🎯</span>
+                        <span class="nav-text">Quizzes</span>
+                    </a>
+                    <a href="#performance" class="nav-link" data-page="performance">
+                        <span class="nav-icon">📊</span>
+                        <span class="nav-text">Performance</span>
+                    </a>
+                    <a href="#leaderboard" class="nav-link" data-page="leaderboard">
+                        <span class="nav-icon">🏆</span>
+                        <span class="nav-text">Leaderboard</span>
+                    </a>
+                    <a href="#results" class="nav-link" data-page="results">
+                        <span class="nav-icon">📈</span>
+                        <span class="nav-text">Results</span>
+                    </a>
+                    <a href="#users" class="nav-link" data-page="users">
+                        <span class="nav-icon">👥</span>
+                        <span class="nav-text">Users</span>
+                    </a>
+                </div>
+                
+                <div class="user-section">
+                    <div class="user-info">
+                        <div class="user-display" id="user-display-area" title="Click to manage users">
+                            <span class="user-icon">👤</span>
+                            <span id="current-player" class="current-player">
+                                <span id="player-name-display">Guest</span>
+                            </span>
+                            <span class="user-status" id="user-status">●</span>
+                        </div>
+                        <div class="user-actions">
+                            <button id="new-player-btn" class="user-btn new-player-btn" title="Add New User">
+                                <span class="btn-icon">➕</span>
+                            </button>
+                            <button id="delete-user-btn" class="user-btn delete-user-btn" title="Delete User">
+                                <span class="btn-icon">🗑️</span>
+                            </button>
+                            <button id="switch-user-btn" class="user-btn switch-user-btn" title="Switch User">
+                                <span class="btn-icon">🔄</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Home Page -->
+        <div id="home" class="page active">
+            <!-- User Welcome Section -->
+            <div id="user-welcome" class="user-welcome hidden">
+                <h3>Welcome back, <span id="user-name-display"></span>! 👋</h3>
+                <p>Ready to continue your math adventure?</p>
+            </div>
+
+            <div class="hero-section">
+                <div class="hero-content">
+                    <h2 class="hero-title">Welcome to πOneers! 🚀</h2>
+                    <p class="hero-subtitle">Master mathematics through exciting challenges and unlock new levels!</p>
+                </div>
+            </div>
+
+            <!-- Main Navigation Cards -->
+            <div class="main-navigation">
+                <!-- Lesson Section (Triangle) -->
+                <div class="nav-card triangle-card" onclick="showPage('lesson')">
+                    <div class="card-icon">📚</div>
+                    <h3>Lesson</h3>
+                    <p>Learn math concepts step by step</p>
+                    <div class="card-arrow">▶</div>
+                </div>
+
+                <!-- Quizzes Section (Circle) -->
+                <div class="nav-card circle-card" onclick="showPage('quizzes')">
+                    <div class="card-icon">🎯</div>
+                    <h3>Quizzes</h3>
+                    <p>Test your knowledge and skills</p>
+                    <div class="card-arrow">▶</div>
+                </div>
+
+                <!-- Performance Section (Square) -->
+                <div class="nav-card square-card" onclick="showPage('performance')">
+                    <div class="card-icon">📊</div>
+                    <h3>Performance</h3>
+                    <p>Track your progress and scores</p>
+                    <div class="card-arrow">▶</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Lesson Page -->
+        <div id="lesson" class="page">
+            <div class="lesson-header">
+                <h2>📚 Math Lessons</h2>
+                <p>Comprehensive video lessons and PDF modules for General Mathematics</p>
+            </div>
+
+            <div class="lesson-content">
+                <div class="lesson-grid">
+                    <!-- Lesson 1 -->
+                    <div class="lesson-card">
+                        <div class="lesson-number">1</div>
+                        <div class="lesson-info">
+                            <h3>Functions and Relations</h3>
+                            <p>Understanding the basics of functions and their relationships</p>
+                            <div class="lesson-resources">
+                                <a href="https://youtu.be/-Pr3NoB9S9k?si=E9MmxGgFhMsbTDW6" target="_blank" class="video-link">
+                                    <span class="resource-icon">🎥</span> Watch Video
+                                </a>
+                                <a href="https://sg.docworkspace.com/d/sIOeq1KGMAvWN_8UG?sa=601.1123" target="_blank" class="pdf-link">
+                                    <span class="resource-icon">📄</span> PDF Module
+                                </a>
+                            </div>
+                        </div>
+                            </div>
+
+                    <!-- Lesson 2 -->
+                    <div class="lesson-card">
+                        <div class="lesson-number">2</div>
+                        <div class="lesson-info">
+                            <h3>Evaluating Functions</h3>
+                            <p>Learn how to evaluate functions at specific values</p>
+                            <div class="lesson-resources">
+                                <a href="https://youtu.be/DeqTiZE30Kc?si=oEOAroRqiGRaygtq" target="_blank" class="video-link">
+                                    <span class="resource-icon">🎥</span> Watch Video
+                                </a>
+                                <a href="https://sg.docworkspace.com/d/sIPiq1KGMAqiR_8UG?sa=601.1123" target="_blank" class="pdf-link">
+                                    <span class="resource-icon">📄</span> PDF Module
+                                </a>
+                            </div>
+                        </div>
+                            </div>
+
+                    <!-- Lesson 3 -->
+                    <div class="lesson-card">
+                        <div class="lesson-number">3</div>
+                        <div class="lesson-info">
+                            <h3>Operations on Functions</h3>
+                            <p>Adding, subtracting, multiplying, and dividing functions</p>
+                            <div class="lesson-resources">
+                                <a href="https://youtu.be/5t1HfD9Ywvw?si=gYWCSmA_xM89OKai" target="_blank" class="video-link">
+                                    <span class="resource-icon">🎥</span> Watch Video
+                                </a>
+                                <a href="https://sg.docworkspace.com/d/sID2q1KGMArCT_8UG?sa=601.1123" target="_blank" class="pdf-link">
+                                    <span class="resource-icon">📄</span> PDF Module
+                                </a>
+                            </div>
+                        </div>
+                            </div>
+
+                    <!-- Lesson 4 -->
+                    <div class="lesson-card">
+                        <div class="lesson-number">4</div>
+                        <div class="lesson-info">
+                            <h3>Composition of Functions</h3>
+                            <p>Understanding function composition and its applications</p>
+                            <div class="lesson-resources">
+                                <a href="https://youtu.be/3RNGizjZbsc?si=PMBLQpR40YwfI8Wp" target="_blank" class="video-link">
+                                    <span class="resource-icon">🎥</span> Watch Video
+                                </a>
+                                <a href="https://sg.docworkspace.com/d/sIJ6q1KGMAr-T_8UG?sa=601.1123" target="_blank" class="pdf-link">
+                                    <span class="resource-icon">📄</span> PDF Module
+                                </a>
+                            </div>
+                    </div>
+                </div>
+
+                    <!-- Lesson 5 -->
+                    <div class="lesson-card">
+                        <div class="lesson-number">5</div>
+                        <div class="lesson-info">
+                            <h3>Rational Functions</h3>
+                            <p>Introduction to rational functions and their properties</p>
+                            <div class="lesson-resources">
+                                <a href="https://youtu.be/BD3F1hL7YAA?si=0F1MwZj8-eW9O_YZ" target="_blank" class="video-link">
+                                    <span class="resource-icon">🎥</span> Watch Video
+                                </a>
+                                <a href="https://sg.docworkspace.com/d/sIJCq1KGMAsqT_8UG?sa=601.1123" target="_blank" class="pdf-link">
+                                    <span class="resource-icon">📄</span> PDF Module
+                                </a>
+                            </div>
+                        </div>
+                            </div>
+
+                    <!-- Lesson 6 -->
+                    <div class="lesson-card">
+                        <div class="lesson-number">6</div>
+                        <div class="lesson-info">
+                            <h3>Solving Rational Equations</h3>
+                            <p>Methods for solving rational equations and inequalities</p>
+                            <div class="lesson-resources">
+                                <a href="https://youtu.be/ZP_8hoRA4uY?si=O5H4zk3mPDK-swKq" target="_blank" class="video-link">
+                                    <span class="resource-icon">🎥</span> Watch Video
+                                </a>
+                                <a href="https://sg.docworkspace.com/d/sID2q1KGMArCT_8UG?sa=601.1123" target="_blank" class="pdf-link">
+                                    <span class="resource-icon">📄</span> PDF Module
+                                </a>
+                            </div>
+                        </div>
+                            </div>
+
+                    <!-- Lesson 7 -->
+                    <div class="lesson-card">
+                        <div class="lesson-number">7</div>
+                        <div class="lesson-info">
+                            <h3>Rational Inequalities</h3>
+                            <p>Solving and graphing rational inequalities</p>
+                            <div class="lesson-resources">
+                                <a href="https://youtu.be/xL_C2iUavlc?si=rhLutDByGo-GLS6y" target="_blank" class="video-link">
+                                    <span class="resource-icon">🎥</span> Watch Video
+                                </a>
+                                <a href="https://sg.docworkspace.com/d/sID2q1KGMArCT_8UG?sa=601.1123" target="_blank" class="pdf-link">
+                                    <span class="resource-icon">📄</span> PDF Module
+                                </a>
+                            </div>
+                        </div>
+                            </div>
+
+                    <!-- Lesson 8 -->
+                    <div class="lesson-card">
+                        <div class="lesson-number">8</div>
+                        <div class="lesson-info">
+                            <h3>Domain and Range</h3>
+                            <p>Finding domain and range of rational functions</p>
+                            <div class="lesson-resources">
+                                <a href="https://youtu.be/luyYBvxn3jg?si=um7D_3A2XQeTIqOr" target="_blank" class="video-link">
+                                    <span class="resource-icon">🎥</span> Watch Video
+                                </a>
+                                <a href="https://sg.docworkspace.com/d/sIDWq1KGMAtOT_8UG?sa=601.1123" target="_blank" class="pdf-link">
+                                    <span class="resource-icon">📄</span> PDF Module
+                                </a>
+                            </div>
+                    </div>
+                </div>
+
+                    <!-- Lesson 9 -->
+                    <div class="lesson-card">
+                        <div class="lesson-number">9</div>
+                        <div class="lesson-info">
+                            <h3>Intercepts and Asymptotes</h3>
+                            <p>Understanding intercepts, zeros, and asymptotes of rational functions</p>
+                            <div class="lesson-resources">
+                                <a href="https://youtu.be/TZ5hYY3cLYs?si=VL-HqzPLbyHd26JM" target="_blank" class="video-link">
+                                    <span class="resource-icon">🎥</span> Watch Video
+                                </a>
+                                <a href="https://sg.docworkspace.com/d/sIFOq1KGMAt-T_8UG?sa=601.1123" target="_blank" class="pdf-link">
+                                    <span class="resource-icon">📄</span> PDF Module
+                                </a>
+                            </div>
+                        </div>
+                            </div>
+
+                    <!-- Lesson 10 -->
+                    <div class="lesson-card">
+                        <div class="lesson-number">10</div>
+                        <div class="lesson-info">
+                            <h3>Real-life Applications</h3>
+                            <p>Solving real-life problems involving rational functions</p>
+                            <div class="lesson-resources">
+                                <a href="https://youtu.be/nE_ykVScQww?si=SjkGSgH0rwdHBypi" target="_blank" class="video-link">
+                                    <span class="resource-icon">🎥</span> Watch Video
+                                </a>
+                                <a href="https://sg.docworkspace.com/d/sIFOq1KGMAt-T_8UG?sa=601.1123" target="_blank" class="pdf-link">
+                                    <span class="resource-icon">📄</span> PDF Module
+                                </a>
+                            </div>
+                        </div>
+                            </div>
+
+                    <!-- Lesson 11 -->
+                    <div class="lesson-card">
+                        <div class="lesson-number">11</div>
+                        <div class="lesson-info">
+                            <h3>One-to-One Functions</h3>
+                            <p>Understanding one-to-one functions and their properties</p>
+                            <div class="lesson-resources">
+                                <a href="https://youtu.be/5BpPH5Nswuw?si=IW8NOyidiIDsYYIe" target="_blank" class="video-link">
+                                    <span class="resource-icon">🎥</span> Watch Video
+                                </a>
+                                <a href="https://sg.docworkspace.com/d/sIHuq1KGMAuqT_8UG?sa=601.1123" target="_blank" class="pdf-link">
+                                    <span class="resource-icon">📄</span> PDF Module
+                                </a>
+                            </div>
+                        </div>
+                            </div>
+
+                    <!-- Lesson 12 -->
+                    <div class="lesson-card">
+                        <div class="lesson-number">12</div>
+                        <div class="lesson-info">
+                            <h3>Inverse Functions</h3>
+                            <p>Finding and working with inverse functions</p>
+                            <div class="lesson-resources">
+                                <a href="https://youtu.be/YEZWPuA_6I0?si=Fh9TXFOpHdXn3LKg" target="_blank" class="video-link">
+                                    <span class="resource-icon">🎥</span> Watch Video
+                                </a>
+                                <a href="https://sg.docworkspace.com/d/sINyq1KGMAveT_8UG?sa=601.1123" target="_blank" class="pdf-link">
+                                    <span class="resource-icon">📄</span> PDF Module
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Leaderboard Page -->
+        <div id="leaderboard" class="page">
+            <div class="user-selection-content">
+                <h2>🏆 Top 10 High Scores</h2>
+                <p>See who's leading the mathematical challenge!</p>
+                
+                <div class="leaderboard-stats">
+                    <div class="stat-card">
+                        <h3>Total Players</h3>
+                        <span id="total-players">0</span>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Your Rank</h3>
+                        <span id="your-rank">-</span>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Your Best Score</h3>
+                        <span id="your-best-score">0%</span>
+                    </div>
+                </div>
+
+                <div class="leaderboard-list">
+                    <div class="leaderboard-header-row">
+                        <div class="rank-col">Rank</div>
+                        <div class="name-col">Player</div>
+                        <div class="score-col">Best Score</div>
+                        <div class="level-col">Level</div>
+                        <div class="date-col">Date</div>
+                    </div>
+                    <div id="leaderboard-entries">
+                        <!-- Leaderboard entries will be populated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Performance Page -->
+        <div id="performance" class="page">
+            <div class="performance-header">
+                <h2>📊 Your Performance</h2>
+                <p>Track your progress across all 12 modules and monitor your mathematical journey</p>
+            </div>
+
+            <div class="performance-content">
+                <div class="performance-overview">
+                    <div class="overview-card">
+                        <h3>Overall Progress</h3>
+                        <div class="progress-circle">
+                            <div class="progress-text" id="overall-progress">0%</div>
+                        </div>
+                        <p>Average Score</p>
+                    </div>
+                    <div class="overview-card">
+                        <h3>Modules Completed</h3>
+                        <div class="progress-circle">
+                            <div class="progress-text" id="modules-completed">0</div>
+                        </div>
+                        <p>Out of 12 Modules</p>
+                    </div>
+                    <div class="overview-card">
+                        <h3>Current Level</h3>
+                        <div class="progress-circle">
+                            <div class="progress-text" id="current-level">1</div>
+                        </div>
+                        <p>Highest Unlocked</p>
+                    </div>
+                </div>
+
+                <div class="performance-breakdown">
+                    <h3>Module Performance</h3>
+                    <div class="module-performance-grid" id="performance-stats">
+                        <!-- Module performance will be populated by JavaScript -->
+                                </div>
+                            </div>
+
+                <div class="achievements-section">
+                    <h3>Recent Achievements</h3>
+                    <div class="achievements-grid" id="performance-achievements">
+                        <div class="achievement-card">
+                            <div class="achievement-icon">🎯</div>
+                            <div class="achievement-info">
+                                <h4>First Steps</h4>
+                                <p>Complete your first module quiz</p>
+                        </div>
+                                </div>
+                        <div class="achievement-card">
+                            <div class="achievement-icon">🔥</div>
+                            <div class="achievement-info">
+                                <h4>Streak Master</h4>
+                                <p>Complete 5 modules in a row</p>
+                            </div>
+                        </div>
+                        <div class="achievement-card">
+                            <div class="achievement-icon">🏆</div>
+                            <div class="achievement-info">
+                                <h4>Perfect Score</h4>
+                                <p>Get 100% on any module quiz</p>
+                                </div>
+                            </div>
+                        <div class="achievement-card">
+                            <div class="achievement-icon">🎓</div>
+                            <div class="achievement-info">
+                                <h4>Graduate</h4>
+                                <p>Complete all 12 modules</p>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quizzes Page -->
+        <div id="quizzes" class="page">
+            <div class="quiz-header">
+                <h2>🎯 Module Quizzes</h2>
+                <p>Test your knowledge from each lesson module and unlock new levels!</p>
+            </div>
+
+            <div class="module-grid">
+                <div class="module-card" id="module-1-card">
+                    <div class="module-number">1</div>
+                    <div class="module-content">
+                        <h3>Functions</h3>
+                        <p>Basic concepts of functions and relations</p>
+                        <div class="module-status" id="module-1-status">Available</div>
+                        <button class="module-button" onclick="startQuiz('module-1')" id="module-1-btn">Start Quiz</button>
+                    </div>
+                </div>
+
+                <div class="module-card locked" id="module-2-card">
+                    <div class="module-number">2</div>
+                    <div class="module-content">
+                        <h3>Evaluating Functions</h3>
+                        <p>Function evaluation and operations</p>
+                        <div class="module-status" id="module-2-status">Locked</div>
+                        <button class="module-button" onclick="startQuiz('module-2')" id="module-2-btn">Start Quiz</button>
+                    </div>
+                </div>
+
+                <div class="module-card locked" id="module-3-card">
+                    <div class="module-number">3</div>
+                    <div class="module-content">
+                        <h3>Operations on Functions</h3>
+                        <p>Addition, subtraction, multiplication, division</p>
+                        <div class="module-status" id="module-3-status">Locked</div>
+                        <button class="module-button" onclick="startQuiz('module-3')" id="module-3-btn">Start Quiz</button>
+                </div>
+            </div>
+
+                <div class="module-card locked" id="module-4-card">
+                    <div class="module-number">4</div>
+                    <div class="module-content">
+                        <h3>Problem Solving</h3>
+                        <p>Real-world function applications</p>
+                        <div class="module-status" id="module-4-status">Locked</div>
+                        <button class="module-button" onclick="startQuiz('module-4')" id="module-4-btn">Start Quiz</button>
+                    </div>
+                </div>
+
+                <div class="module-card locked" id="module-5-card">
+                    <div class="module-number">5</div>
+                    <div class="module-content">
+                        <h3>Rational Functions</h3>
+                        <p>Introduction to rational functions</p>
+                        <div class="module-status" id="module-5-status">Locked</div>
+                        <button class="module-button" onclick="startQuiz('module-5')" id="module-5-btn">Start Quiz</button>
+                    </div>
+                </div>
+
+                <div class="module-card locked" id="module-6-card">
+                    <div class="module-number">6</div>
+                    <div class="module-content">
+                        <h3>Rational Equations</h3>
+                        <p>Solving rational equations and inequalities</p>
+                        <div class="module-status" id="module-6-status">Locked</div>
+                        <button class="module-button" onclick="startQuiz('module-6')" id="module-6-btn">Start Quiz</button>
+                    </div>
+                </div>
+
+                <div class="module-card locked" id="module-7-card">
+                    <div class="module-number">7</div>
+                    <div class="module-content">
+                        <h3>Rational Inequalities</h3>
+                        <p>Advanced rational function concepts</p>
+                        <div class="module-status" id="module-7-status">Locked</div>
+                        <button class="module-button" onclick="startQuiz('module-7')" id="module-7-btn">Start Quiz</button>
+                    </div>
+                </div>
+
+                <div class="module-card locked" id="module-8-card">
+                    <div class="module-number">8</div>
+                    <div class="module-content">
+                        <h3>Domain & Range</h3>
+                        <p>Domain and range of rational functions</p>
+                        <div class="module-status" id="module-8-status">Locked</div>
+                        <button class="module-button" onclick="startQuiz('module-8')" id="module-8-btn">Start Quiz</button>
+                    </div>
+                </div>
+
+                <div class="module-card locked" id="module-9-card">
+                    <div class="module-number">9</div>
+                    <div class="module-content">
+                        <h3>Intercepts & Asymptotes</h3>
+                        <p>Zeroes, intercepts, and asymptotes</p>
+                        <div class="module-status" id="module-9-status">Locked</div>
+                        <button class="module-button" onclick="startQuiz('module-9')" id="module-9-btn">Start Quiz</button>
+                    </div>
+            </div>
+
+                <div class="module-card locked" id="module-10-card">
+                    <div class="module-number">10</div>
+                    <div class="module-content">
+                        <h3>Real-life Problems</h3>
+                        <p>Applications of rational functions</p>
+                        <div class="module-status" id="module-10-status">Locked</div>
+                        <button class="module-button" onclick="startQuiz('module-10')" id="module-10-btn">Start Quiz</button>
+                    </div>
+                </div>
+
+                <div class="module-card locked" id="module-11-card">
+                    <div class="module-number">11</div>
+                    <div class="module-content">
+                        <h3>One-to-One Functions</h3>
+                        <p>One-to-one correspondence and functions</p>
+                        <div class="module-status" id="module-11-status">Locked</div>
+                        <button class="module-button" onclick="startQuiz('module-11')" id="module-11-btn">Start Quiz</button>
+                    </div>
+                </div>
+
+                <div class="module-card locked" id="module-12-card">
+                    <div class="module-number">12</div>
+                    <div class="module-content">
+                        <h3>Inverse Functions</h3>
+                        <p>Inverse of one-to-one functions</p>
+                        <div class="module-status" id="module-12-status">Locked</div>
+                        <button class="module-button" onclick="startQuiz('module-12')" id="module-12-btn">Start Quiz</button>
+                    </div>
+                </div>
+                </div>
+            </div>
+
+        <!-- Module 1 Quiz Page -->
+        <div id="module-1-quiz" class="page quiz-page">
+            <div class="quiz-page-header">
+                <button class="back-btn" onclick="showPage('quizzes')">← Back to Quizzes</button>
+                <h2>📊 Module 1 Quiz</h2>
+                <div class="quiz-timer" id="quiz-timer">⏱️ 30s</div>
+            </div>
+
+            <div class="quiz-interface">
+                <div class="quiz-progress-bar">
+                    <div class="progress-text">
+                        Question <span id="current-question">1</span> of <span id="total-questions">10</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="quiz-progress-bar"></div>
+                    </div>
+                </div>
+                
+                <div class="quiz-content">
+                    <div class="question-container" id="question-container">
+                        <p id="question-text">Question will appear here</p>
+                    </div>
+                        <div class="options-container" id="options-container">
+                            <!-- Options will be populated by JavaScript -->
+                        </div>
+                    <div class="quiz-controls">
+                        <button class="submit-btn" id="submit-answer" onclick="submitAnswer('module-1')">Submit Answer</button>
+                        <button class="next-btn hidden" id="next-question" onclick="nextQuestion('module-1')">Next Question</button>
+                    </div>
+                </div>
+                        </div>
+                    </div>
+                    
+        <!-- Module 2 Quiz Page -->
+        <div id="module-2-quiz" class="page quiz-page">
+            <div class="quiz-page-header">
+                <button class="back-btn" onclick="showPage('quizzes')">← Back to Quizzes</button>
+                <h2>📊 Module 2 Quiz</h2>
+                <div class="quiz-timer" id="module-2-timer">⏱️ 30s</div>
+            </div>
+
+            <div class="quiz-interface">
+                <div class="quiz-progress-bar">
+                    <div class="progress-text">
+                        Question <span id="module-2-current-question">1</span> of <span id="module-2-total-questions">10</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="module-2-progress-fill"></div>
+                    </div>
+                </div>
+                
+                <div class="quiz-content">
+                    <div class="question-container" id="module-2-question-container">
+                        <p id="module-2-question-text">Question will appear here</p>
+                    </div>
+                    <div class="options-container" id="module-2-options-container">
+                        <!-- Options will be populated by JavaScript -->
+                    </div>
+                    <div class="quiz-controls">
+                        <button class="submit-btn" id="module-2-submit-answer" onclick="submitAnswer('module-2')">Submit Answer</button>
+                        <button class="next-btn hidden" id="module-2-next-question" onclick="nextQuestion('module-2')">Next Question</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Module 3 Quiz Page -->
+        <div id="module-3-quiz" class="page quiz-page">
+            <div class="quiz-page-header">
+                <button class="back-btn" onclick="showPage('quizzes')">← Back to Quizzes</button>
+                <h2>📊 Module 3 Quiz</h2>
+                <div class="quiz-timer" id="module-3-timer">⏱️ 30s</div>
+            </div>
+
+            <div class="quiz-interface">
+                <div class="quiz-progress-bar">
+                    <div class="progress-text">
+                        Question <span id="module-3-current-question">1</span> of <span id="module-3-total-questions">10</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="module-3-progress-fill"></div>
+                    </div>
+                </div>
+                
+                <div class="quiz-content">
+                    <div class="question-container" id="module-3-question-container">
+                        <p id="module-3-question-text">Question will appear here</p>
+                    </div>
+                    <div class="options-container" id="module-3-options-container">
+                        <!-- Options will be populated by JavaScript -->
+                    </div>
+                    <div class="quiz-controls">
+                        <button class="submit-btn" id="module-3-submit-answer" onclick="submitAnswer('module-3')">Submit Answer</button>
+                        <button class="next-btn hidden" id="module-3-next-question" onclick="nextQuestion('module-3')">Next Question</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Module 4 Quiz Page -->
+        <div id="module-4-quiz" class="page quiz-page">
+            <div class="quiz-page-header">
+                <button class="back-btn" onclick="showPage('quizzes')">← Back to Quizzes</button>
+                <h2>📊 Module 4 Quiz</h2>
+                <div class="quiz-timer" id="module-4-timer">⏱️ 30s</div>
+            </div>
+
+            <div class="quiz-interface">
+                <div class="quiz-progress-bar">
+                    <div class="progress-text">
+                        Question <span id="module-4-current-question">1</span> of <span id="module-4-total-questions">10</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="module-4-progress-fill"></div>
+                    </div>
+                </div>
+                
+                <div class="quiz-content">
+                    <div class="question-container" id="module-4-question-container">
+                        <p id="module-4-question-text">Question will appear here</p>
+                    </div>
+                    <div class="options-container" id="module-4-options-container">
+                        <!-- Options will be populated by JavaScript -->
+                    </div>
+                    <div class="quiz-controls">
+                        <button class="submit-btn" id="module-4-submit-answer" onclick="submitAnswer('module-4')">Submit Answer</button>
+                        <button class="next-btn hidden" id="module-4-next-question" onclick="nextQuestion('module-4')">Next Question</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Module 5 Quiz Page -->
+        <div id="module-5-quiz" class="page quiz-page">
+            <div class="quiz-page-header">
+                <button class="back-btn" onclick="showPage('quizzes')">← Back to Quizzes</button>
+                <h2>📊 Module 5 Quiz</h2>
+                <div class="quiz-timer" id="module-5-timer">⏱️ 30s</div>
+            </div>
+
+            <div class="quiz-interface">
+                <div class="quiz-progress-bar">
+                    <div class="progress-text">
+                        Question <span id="module-5-current-question">1</span> of <span id="module-5-total-questions">10</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="module-5-progress-fill"></div>
+                    </div>
+                </div>
+                
+                <div class="quiz-content">
+                    <div class="question-container" id="module-5-question-container">
+                        <p id="module-5-question-text">Question will appear here</p>
+                    </div>
+                    <div class="options-container" id="module-5-options-container">
+                        <!-- Options will be populated by JavaScript -->
+                    </div>
+                    <div class="quiz-controls">
+                        <button class="submit-btn" id="module-5-submit-answer" onclick="submitAnswer('module-5')">Submit Answer</button>
+                        <button class="next-btn hidden" id="module-5-next-question" onclick="nextQuestion('module-5')">Next Question</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Module 6 Quiz Page -->
+        <div id="module-6-quiz" class="page quiz-page">
+            <div class="quiz-page-header">
+                <button class="back-btn" onclick="showPage('quizzes')">← Back to Quizzes</button>
+                <h2>📊 Module 6 Quiz</h2>
+                <div class="quiz-timer" id="module-6-timer">⏱️ 30s</div>
+            </div>
+
+            <div class="quiz-interface">
+                <div class="quiz-progress-bar">
+                    <div class="progress-text">
+                        Question <span id="module-6-current-question">1</span> of <span id="module-6-total-questions">10</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="module-6-progress-fill"></div>
+                    </div>
+                </div>
+                
+                <div class="quiz-content">
+                    <div class="question-container" id="module-6-question-container">
+                        <p id="module-6-question-text">Question will appear here</p>
+                    </div>
+                    <div class="options-container" id="module-6-options-container">
+                        <!-- Options will be populated by JavaScript -->
+                    </div>
+                    <div class="quiz-controls">
+                        <button class="submit-btn" id="module-6-submit-answer" onclick="submitAnswer('module-6')">Submit Answer</button>
+                        <button class="next-btn hidden" id="module-6-next-question" onclick="nextQuestion('module-6')">Next Question</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Module 7 Quiz Page -->
+        <div id="module-7-quiz" class="page quiz-page">
+            <div class="quiz-page-header">
+                <button class="back-btn" onclick="showPage('quizzes')">← Back to Quizzes</button>
+                <h2>📊 Module 7 Quiz</h2>
+                <div class="quiz-timer" id="module-7-timer">⏱️ 30s</div>
+            </div>
+
+            <div class="quiz-interface">
+                <div class="quiz-progress-bar">
+                    <div class="progress-text">
+                        Question <span id="module-7-current-question">1</span> of <span id="module-7-total-questions">10</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="module-7-progress-fill"></div>
+                    </div>
+                </div>
+                
+                <div class="quiz-content">
+                    <div class="question-container" id="module-7-question-container">
+                        <p id="module-7-question-text">Question will appear here</p>
+                    </div>
+                    <div class="options-container" id="module-7-options-container">
+                        <!-- Options will be populated by JavaScript -->
+                    </div>
+                    <div class="quiz-controls">
+                        <button class="submit-btn" id="module-7-submit-answer" onclick="submitAnswer('module-7')">Submit Answer</button>
+                        <button class="next-btn hidden" id="module-7-next-question" onclick="nextQuestion('module-7')">Next Question</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Module 8 Quiz Page -->
+        <div id="module-8-quiz" class="page quiz-page">
+            <div class="quiz-page-header">
+                <button class="back-btn" onclick="showPage('quizzes')">← Back to Quizzes</button>
+                <h2>📊 Module 8 Quiz</h2>
+                <div class="quiz-timer" id="module-8-timer">⏱️ 30s</div>
+            </div>
+
+            <div class="quiz-interface">
+                <div class="quiz-progress-bar">
+                    <div class="progress-text">
+                        Question <span id="module-8-current-question">1</span> of <span id="module-8-total-questions">10</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="module-8-progress-fill"></div>
+                    </div>
+                </div>
+                
+                <div class="quiz-content">
+                    <div class="question-container" id="module-8-question-container">
+                        <p id="module-8-question-text">Question will appear here</p>
+                    </div>
+                    <div class="options-container" id="module-8-options-container">
+                        <!-- Options will be populated by JavaScript -->
+                    </div>
+                    <div class="quiz-controls">
+                        <button class="submit-btn" id="module-8-submit-answer" onclick="submitAnswer('module-8')">Submit Answer</button>
+                        <button class="next-btn hidden" id="module-8-next-question" onclick="nextQuestion('module-8')">Next Question</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Module 9 Quiz Page -->
+        <div id="module-9-quiz" class="page quiz-page">
+            <div class="quiz-page-header">
+                <button class="back-btn" onclick="showPage('quizzes')">← Back to Quizzes</button>
+                <h2>📊 Module 9 Quiz</h2>
+                <div class="quiz-timer" id="module-9-timer">⏱️ 30s</div>
+            </div>
+
+            <div class="quiz-interface">
+                <div class="quiz-progress-bar">
+                    <div class="progress-text">
+                        Question <span id="module-9-current-question">1</span> of <span id="module-9-total-questions">10</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="module-9-progress-fill"></div>
+                    </div>
+                </div>
+                
+                <div class="quiz-content">
+                    <div class="question-container" id="module-9-question-container">
+                        <p id="module-9-question-text">Question will appear here</p>
+                    </div>
+                    <div class="options-container" id="module-9-options-container">
+                        <!-- Options will be populated by JavaScript -->
+                    </div>
+                    <div class="quiz-controls">
+                        <button class="submit-btn" id="module-9-submit-answer" onclick="submitAnswer('module-9')">Submit Answer</button>
+                        <button class="next-btn hidden" id="module-9-next-question" onclick="nextQuestion('module-9')">Next Question</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Module 10 Quiz Page -->
+        <div id="module-10-quiz" class="page quiz-page">
+            <div class="quiz-page-header">
+                <button class="back-btn" onclick="showPage('quizzes')">← Back to Quizzes</button>
+                <h2>📊 Module 10 Quiz</h2>
+                <div class="quiz-timer" id="module-10-timer">⏱️ 30s</div>
+            </div>
+
+            <div class="quiz-interface">
+                <div class="quiz-progress-bar">
+                    <div class="progress-text">
+                        Question <span id="module-10-current-question">1</span> of <span id="module-10-total-questions">10</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="module-10-progress-fill"></div>
+                    </div>
+                </div>
+                
+                <div class="quiz-content">
+                    <div class="question-container" id="module-10-question-container">
+                        <p id="module-10-question-text">Question will appear here</p>
+                    </div>
+                    <div class="options-container" id="module-10-options-container">
+                        <!-- Options will be populated by JavaScript -->
+                    </div>
+                    <div class="quiz-controls">
+                        <button class="submit-btn" id="module-10-submit-answer" onclick="submitAnswer('module-10')">Submit Answer</button>
+                        <button class="next-btn hidden" id="module-10-next-question" onclick="nextQuestion('module-10')">Next Question</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Module 11 Quiz Page -->
+        <div id="module-11-quiz" class="page quiz-page">
+            <div class="quiz-page-header">
+                <button class="back-btn" onclick="showPage('quizzes')">← Back to Quizzes</button>
+                <h2>📊 Module 11 Quiz</h2>
+                <div class="quiz-timer" id="module-11-timer">⏱️ 30s</div>
+            </div>
+
+            <div class="quiz-interface">
+                <div class="quiz-progress-bar">
+                    <div class="progress-text">
+                        Question <span id="module-11-current-question">1</span> of <span id="module-11-total-questions">13</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="module-11-progress-fill"></div>
+                    </div>
+                </div>
+                
+                <div class="quiz-content">
+                    <div class="question-container" id="module-11-question-container">
+                        <p id="module-11-question-text">Question will appear here</p>
+                    </div>
+                    <div class="options-container" id="module-11-options-container">
+                        <!-- Options will be populated by JavaScript -->
+                    </div>
+                    <div class="quiz-controls">
+                        <button class="submit-btn" id="module-11-submit-answer" onclick="submitAnswer('module-11')">Submit Answer</button>
+                        <button class="next-btn hidden" id="module-11-next-question" onclick="nextQuestion('module-11')">Next Question</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Module 12 Quiz Page -->
+        <div id="module-12-quiz" class="page quiz-page">
+            <div class="quiz-page-header">
+                <button class="back-btn" onclick="showPage('quizzes')">← Back to Quizzes</button>
+                <h2>📊 Module 12 Quiz</h2>
+                <div class="quiz-timer" id="module-12-timer">⏱️ 30s</div>
+            </div>
+
+            <div class="quiz-interface">
+                <div class="quiz-progress-bar">
+                    <div class="progress-text">
+                        Question <span id="module-12-current-question">1</span> of <span id="module-12-total-questions">13</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="module-12-progress-fill"></div>
+                    </div>
+                </div>
+                
+                <div class="quiz-content">
+                    <div class="question-container" id="module-12-question-container">
+                        <p id="module-12-question-text">Question will appear here</p>
+                    </div>
+                    <div class="options-container" id="module-12-options-container">
+                        <!-- Options will be populated by JavaScript -->
+                    </div>
+                    <div class="quiz-controls">
+                        <button class="submit-btn" id="module-12-submit-answer" onclick="submitAnswer('module-12')">Submit Answer</button>
+                        <button class="next-btn hidden" id="module-12-next-question" onclick="nextQuestion('module-12')">Next Question</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quiz Results Page -->
+        <div id="quiz-results" class="page">
+            <div class="quiz-results-header">
+                <h2>🎉 Quiz Results</h2>
+                <p>Great job! Here's how you performed</p>
+            </div>
+            <div class="quiz-results-content">
+                <div class="results-card">
+                    <div class="score-display">
+                        <div class="score-circle">
+                            <div class="score-percentage" id="final-score">0%</div>
+                        </div>
+                        <h3 id="score-message">Well Done!</h3>
+                        <p id="score-description">You completed the quiz successfully</p>
+                    </div>
+                    
+                    <div class="results-details">
+                        <div class="detail-item">
+                            <span class="detail-label">Correct Answers:</span>
+                            <span class="detail-value" id="correct-answers">0/10</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Time Taken:</span>
+                            <span class="detail-value" id="time-taken">0s</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Module:</span>
+                            <span class="detail-value" id="module-name">Module 1</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Status:</span>
+                            <span class="detail-value" id="module-status">Available</span>
+                        </div>
+                    </div>
+                    
+                    <div class="module-breakdown">
+                        <h3>Module Progress Overview</h3>
+                        <div class="module-progress-grid" id="module-breakdown-grid">
+                            <!-- Module breakdown will be populated by JavaScript -->
+                        </div>
+                    </div>
+                    
+                    <div class="results-actions">
+                        <button class="action-btn primary" onclick="continueToNextQuiz()">Continue Learning</button>
+                        <button class="action-btn secondary" onclick="showPage('performance')">View Performance</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results Page -->
+        <div id="results" class="page">
+            <div class="results-header">
+                <h2>Your Math Journey Results</h2>
+                <p>Track your progress and achievements</p>
+            </div>
+
+            <div class="results-content">
+                <div class="overall-stats">
+                    <div class="stat-item">
+                        <h3>Total Quizzes Taken</h3>
+                        <span id="total-quizzes">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <h3>Average Score</h3>
+                        <span id="average-score">0%</span>
+                    </div>
+                    <div class="stat-item">
+                        <h3>Modules Completed</h3>
+                        <span id="levels-completed">0/12</span>
+                    </div>
+                </div>
+
+                <div class="level-results">
+                    <h3>Module Breakdown</h3>
+                    <div class="module-breakdown-grid" id="leaderboard-module-grid">
+                        <!-- Module breakdown will be populated by JavaScript -->
+                    </div>
+                </div>
+
+                <div class="achievements">
+                    <h3>Achievements</h3>
+                    <div class="achievement-grid" id="achievement-grid">
+                        <!-- Achievements will be populated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Users Page -->
+    <div id="users" class="page">
+        <div class="users-header">
+            <h2>👥 User Management</h2>
+            <p>Track all users, their login activity, and progress statistics</p>
+        </div>
+
+        <div class="users-content">
+            <div class="users-overview">
+                <div class="overview-card">
+                    <h3>Total Users</h3>
+                    <div class="stat-number" id="total-users-count">0</div>
+                    <p>Registered Users</p>
+                </div>
+                <div class="overview-card">
+                    <h3>Active Today</h3>
+                    <div class="stat-number" id="active-today-count">0</div>
+                    <p>Users Active Today</p>
+                </div>
+                <div class="overview-card">
+                    <h3>Last Login</h3>
+                    <div class="stat-number" id="last-login-time">--:--</div>
+                    <p>Most Recent Activity</p>
+                </div>
+            </div>
+
+            <div class="users-table-container">
+                <div class="table-header">
+                    <h3>User Activity Log</h3>
+                    <div class="table-controls">
+                        <button id="refresh-users-btn" class="refresh-btn" title="Refresh Data">
+                            <span class="btn-icon">🔄</span>
+                        </button>
+                        <button id="export-users-btn" class="export-btn" title="Export Data">
+                            <span class="btn-icon">📊</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="users-table-wrapper">
+                    <table class="users-table" id="users-table">
+                        <thead>
+                            <tr>
+                                <th>User</th>
+                                <th>Status</th>
+                                <th>Last Login</th>
+                                <th>Modules Completed</th>
+                                <th>Average Score</th>
+                                <th>Current Level</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="users-table-body">
+                            <!-- User data will be populated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="user-activity-chart">
+                <h3>Login Activity (Last 7 Days)</h3>
+                <div class="activity-chart" id="activity-chart">
+                    <!-- Activity chart will be populated by JavaScript -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Popup Container -->
+    <div id="popup-container" class="popup-container">
+        <div class="popup-message" id="popup-message">
+            <div class="popup-content">
+                <div class="popup-icon" id="popup-icon">ℹ️</div>
+                <div class="popup-text" id="popup-text">Message</div>
+                <button class="popup-close" onclick="hidePopup()">×</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="piOneers-module-script.js"></script>
+</body>
+</html>
