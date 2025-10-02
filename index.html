@@ -654,29 +654,29 @@
             <div class="quiz-page-header">
                 <button class="back-btn" onclick="showPage('quizzes')">← Back to Quizzes</button>
                 <h2>📊 Module 1 Quiz</h2>
-                <div class="quiz-timer" id="quiz-timer">⏱️ 30s</div>
+                <div class="quiz-timer" id="module-1-timer">⏱️ 30s</div>
             </div>
 
             <div class="quiz-interface">
                 <div class="quiz-progress-bar">
                     <div class="progress-text">
-                        Question <span id="current-question">1</span> of <span id="total-questions">10</span>
+                        Question <span id="module-1-current-question">1</span> of <span id="module-1-total-questions">10</span>
                     </div>
                     <div class="progress-bar">
-                        <div class="progress-fill" id="quiz-progress-bar"></div>
+                        <div class="progress-fill" id="module-1-progress-fill"></div>
                     </div>
                 </div>
                 
                 <div class="quiz-content">
-                    <div class="question-container" id="question-container">
-                        <p id="question-text">Question will appear here</p>
+                    <div class="question-container" id="module-1-question-container">
+                        <p id="module-1-question-text">Question will appear here</p>
                     </div>
-                        <div class="options-container" id="options-container">
+                        <div class="options-container" id="module-1-options-container">
                             <!-- Options will be populated by JavaScript -->
                         </div>
                     <div class="quiz-controls">
-                        <button class="submit-btn" id="submit-answer" onclick="submitAnswer('module-1')">Submit Answer</button>
-                        <button class="next-btn hidden" id="next-question" onclick="nextQuestion('module-1')">Next Question</button>
+                        <button class="submit-btn" id="module-1-submit-answer" onclick="submitAnswer('module-1')">Submit Answer</button>
+                        <button class="next-btn hidden" id="module-1-next-question" onclick="nextQuestion('module-1')">Next Question</button>
                     </div>
                 </div>
                         </div>
@@ -1132,6 +1132,38 @@
             </div>
         </div>
 
+        <!-- Post-Quiz Page -->
+        <div id="post-quiz-page" class="page">
+            <div class="quiz-header">
+                <h2>🎓 POST-QUIZ Assessment</h2>
+                <p>Final comprehensive test after completing all modules!</p>
+            </div>
+            <div class="quiz-container">
+                <div class="quiz-progress">
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="post-quiz-progress"></div>
+                    </div>
+                    <div class="progress-text">
+                        <span id="post-quiz-question-number">1</span> of 8
+                    </div>
+                </div>
+                <div class="quiz-timer">
+                    <span class="timer-icon">⏱️</span>
+                    <span id="post-quiz-timer">30</span>s
+                </div>
+                <div class="quiz-question">
+                    <h3 id="post-quiz-question-text">Question will appear here</h3>
+                </div>
+                <div class="quiz-options" id="post-quiz-options">
+                    <!-- Options will be populated by JavaScript -->
+                </div>
+                <div class="quiz-actions">
+                    <button id="post-quiz-next-btn" class="quiz-btn primary" onclick="showPostQuizAnswerAndProceed()" disabled>Next Question</button>
+                    <button id="post-quiz-submit-btn" class="quiz-btn primary" onclick="submitPostQuiz()" style="display: none;">Submit Quiz</button>
+                </div>
+            </div>
+        </div>
+
         <!-- Results Page -->
         <div id="results" class="page">
             <div class="results-header">
@@ -1251,6 +1283,6 @@
         </div>
     </div>
 
-    <script src="piOneers-module-script.js"></script>
+    <script src="piOneers-module-script.js?v=4"></script>
 </body>
 </html>

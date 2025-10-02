@@ -9,7 +9,9 @@ let gameState = {
     allUsers: {},
     currentUserId: null,
     preQuizCompleted: false,
-    preQuizScore: 0
+    preQuizScore: 0,
+    postQuizCompleted: false,
+    postQuizScore: 0
 };
 
 // High Scores Database
@@ -147,8 +149,6 @@ const quizData = {
             correct: 0
         }
     ],
-
-    
     'module-2': [
         {
             question: "The following are notations for composite functions EXCEPT,",
@@ -1739,8 +1739,104 @@ const preQuizData = [
     }
 ];
 
+// Post-quiz data (appears after completing all 12 modules)
+const postQuizData = [
+    {
+        question: "What do you call a relation in which each element of the domain corresponds to exactly one element of the range?",
+        options: [
+            "A. Equation",
+            "B. Function",
+            "C. Real Numbers",
+            "D. Relation"
+        ],
+        correct: 1
+    },
+    {
+        question: "Which of the following relations are functions?",
+        options: [
+            "A. G= {(1,3), (1,4), (2,5), (2,6), (3,7)}",
+            "B. H= {(1,0), (0,1), (-1,0), (0,-1)}",
+            "C. I= {(-2,4), (-1,1), (0,0), (1,1), (2,4)}",
+            "D. J= {(1,1), (1,2), (1,3), (1,4), (1,5)}"
+        ],
+        correct: 2
+    },
+    {
+        question: "Which is TRUE about function?",
+        options: [
+            "A. Some functions are not relations",
+            "B. All functions are relations",
+            "C. All relations are functions",
+            "D. Not all functions are relations"
+        ],
+        correct: 1
+    },
+    {
+        question: "It is the set of outputs or the corresponding outcomes from the set of all values of x in a relation.",
+        options: [
+            "A. Domain",
+            "B. Range",
+            "C. Asymptote",
+            "D. Intercept"
+        ],
+        correct: 1
+    },
+    {
+        question: "The set of all possible values that the variable x can take in relation.",
+        options: [
+            "A. Domain",
+            "B. Range",
+            "C. Asymptote",
+            "D. Intercept"
+        ],
+        correct: 0
+    },
+    {
+        question: "Which of the following ordered pairs is just a relation?",
+        options: [
+            "A. (-5, 2), (0, 2), (1, 2), (2, 2), (3, 2)",
+            "B. (-7, 4), (-2, 5), (-1, 6), (1, 7), (2, 8)",
+            "C. (2, -2), (3, -3), (4, 4), (5, -5), (6, 4)",
+            "D. (-1, 2), (-1, 1), (0, 0), (1, 2), (2, 2)"
+        ],
+        correct: 3
+    },
+    {
+        question: "Evaluate the function f(x)=x²-3x-10 if x=4.",
+        options: [
+            "A. 1",
+            "B. 3",
+            "C. -4",
+            "D. -6"
+        ],
+        correct: 3
+    },
+    {
+        question: "Given f(x) = x³ and g(x) = x+7, what is f(x) + g(x)?",
+        options: [
+            "A. x³ - x - 7",
+            "B. -x³ - x - 7",
+            "C. -x³ + x - 7",
+            "D. x³ + x + 7"
+        ],
+        correct: 3
+    }
+];
+
 // Pre-quiz state
 let preQuizState = {
+    currentQuestion: 0,
+    score: 0,
+    answers: [],
+    startTime: 0,
+    timeLeft: 30,
+    timer: null,
+    warned10: false,
+    warned5: false
+};
+
+// Post-quiz state
+let postQuizState = {
     currentQuestion: 0,
     score: 0,
     answers: [],
@@ -2131,6 +2227,368 @@ function submitPreQuiz() {
     }, 3000); // Wait 3 seconds to show the success message and updated quizzes page
 }
 
+// POST-QUIZ FUNCTIONS
+
+// Initialize post-quiz
+function initializePostQuiz() {
+    postQuizState = {
+        currentQuestion: 0,
+        score: 0,
+        answers: [],
+        startTime: Date.now(),
+        timeLeft: 30,
+        timer: null,
+        warned10: false,
+        warned5: false
+    };
+    
+    // Clear any existing visual feedback
+    clearPostQuizVisualFeedback();
+}
+
+// Show post-quiz page
+function showPostQuizPage() {
+    showPage('post-quiz-page');
+    displayPostQuizQuestion();
+    startPostQuizTimer();
+}
+
+// Display current post-quiz question
+function displayPostQuizQuestion() {
+    const question = postQuizData[postQuizState.currentQuestion];
+    const questionText = document.getElementById('post-quiz-question-text');
+    const optionsContainer = document.getElementById('post-quiz-options');
+    const questionNumber = document.getElementById('post-quiz-question-number');
+    const progressFill = document.getElementById('post-quiz-progress');
+    const nextBtn = document.getElementById('post-quiz-next-btn');
+    const submitBtn = document.getElementById('post-quiz-submit-btn');
+    
+    // Update question number and progress
+    questionNumber.textContent = postQuizState.currentQuestion + 1;
+    progressFill.style.width = `${((postQuizState.currentQuestion + 1) / postQuizData.length) * 100}%`;
+    
+    // Display question
+    questionText.textContent = question.question;
+    
+    // Clear and populate options
+    optionsContainer.innerHTML = '';
+    question.options.forEach((option, index) => {
+        const optionElement = document.createElement('div');
+        optionElement.className = 'quiz-option';
+        optionElement.innerHTML = `
+            <input type="radio" name="post-quiz-answer" value="${index}" id="post-quiz-option-${index}">
+            <label for="post-quiz-option-${index}">${option}</label>
+        `;
+        optionsContainer.appendChild(optionElement);
+    });
+    
+    // Add event listeners to options
+    const radioButtons = optionsContainer.querySelectorAll('input[type="radio"]');
+    radioButtons.forEach(radio => {
+        radio.addEventListener('change', function() {
+            nextBtn.disabled = false;
+            postQuizState.answers[postQuizState.currentQuestion] = parseInt(this.value);
+            
+            // Keep timer running - don't clear it when answer is selected
+        });
+    });
+    
+    // Show/hide buttons
+    if (postQuizState.currentQuestion === postQuizData.length - 1) {
+        nextBtn.style.display = 'none';
+        submitBtn.style.display = 'inline-block';
+    } else {
+        nextBtn.style.display = 'inline-block';
+        submitBtn.style.display = 'none';
+    }
+    
+    // Reset button state
+    nextBtn.disabled = true;
+    
+    // Reset timer display
+    document.getElementById('post-quiz-timer').textContent = postQuizState.timeLeft;
+}
+
+// Start post-quiz timer
+function startPostQuizTimer() {
+    // Clear any existing timer
+    if (postQuizState.timer) {
+        clearInterval(postQuizState.timer);
+    }
+    
+    const startTime = Date.now();
+    const duration = 30000; // 30 seconds per question in milliseconds
+    
+    // Store start time for accurate calculations
+    postQuizState.startTime = startTime;
+    postQuizState.timeLeft = 30;
+    
+    // Update timer immediately
+    updatePostQuizTimer();
+    
+    // Use high-frequency updates for smooth display
+    postQuizState.timer = setInterval(() => {
+        const elapsed = Date.now() - startTime;
+        const remaining = Math.max(0, duration - elapsed);
+        
+        // Calculate time left in seconds (more accurate)
+        postQuizState.timeLeft = Math.ceil(remaining / 1000);
+        
+        updatePostQuizTimer();
+        
+        // Check if time is up
+        if (remaining <= 0) {
+            clearInterval(postQuizState.timer);
+            postQuizState.timer = null;
+            nextPostQuizQuestion(); // This will show answer feedback
+        }
+    }, 50); // Update every 50ms for smooth display
+}
+
+// Update post-quiz timer display
+function updatePostQuizTimer() {
+    const timerElement = document.getElementById('post-quiz-timer');
+    if (!timerElement) return;
+    
+    // Ensure timeLeft is never negative
+    const timeLeft = Math.max(0, postQuizState.timeLeft);
+    
+    // Format display - show actual countdown timer
+    timerElement.textContent = timeLeft;
+    
+    // Add visual warning when time is low
+    if (timeLeft <= 10) {
+        addPostQuizTimerWarning();
+        
+        // Show urgent time warnings (only once per warning)
+        if (timeLeft === 10 && !postQuizState.warned10) {
+            postQuizState.warned10 = true;
+            showPopup('Hurry up! Only 10 seconds left! ⚡', 'warning');
+        } else if (timeLeft === 5 && !postQuizState.warned5) {
+            postQuizState.warned5 = true;
+            showPopup('Last 5 seconds! Quick! 🚨', 'error');
+        }
+    } else {
+        removePostQuizTimerWarning();
+        // Reset warning flags when time is above 10
+        if (timeLeft > 10) {
+            postQuizState.warned10 = false;
+            postQuizState.warned5 = false;
+        }
+    }
+    
+    // Add critical warning for last 3 seconds
+    if (timeLeft <= 3) {
+        timerElement.style.color = '#dc3545';
+        timerElement.style.fontWeight = 'bold';
+        timerElement.style.animation = 'pulse 0.5s infinite';
+    } else {
+        timerElement.style.color = '';
+        timerElement.style.fontWeight = '';
+        timerElement.style.animation = '';
+    }
+}
+
+// Add post-quiz timer warning
+function addPostQuizTimerWarning() {
+    const timerElement = document.getElementById('post-quiz-timer');
+    if (timerElement) {
+        timerElement.style.color = '#ffc107';
+        timerElement.style.fontWeight = 'bold';
+    }
+}
+
+// Remove post-quiz timer warning
+function removePostQuizTimerWarning() {
+    const timerElement = document.getElementById('post-quiz-timer');
+    if (timerElement) {
+        timerElement.style.color = '';
+        timerElement.style.fontWeight = '';
+    }
+}
+
+// Clear visual feedback from post-quiz options
+function clearPostQuizVisualFeedback() {
+    const optionsContainer = document.getElementById('post-quiz-options');
+    const optionElements = optionsContainer.querySelectorAll('.quiz-option');
+    
+    optionElements.forEach(option => {
+        const label = option.querySelector('label');
+        // Reset styles
+        option.style.backgroundColor = '';
+        option.style.border = '';
+        option.style.opacity = '';
+        // Reset label content (remove checkmarks and X marks)
+        if (label) {
+            label.innerHTML = label.innerHTML.replace(/[✓✗]\s*$/, '');
+        }
+    });
+    
+    // Remove any explanation divs
+    const explanationDivs = optionsContainer.querySelectorAll('.answer-explanation');
+    explanationDivs.forEach(div => div.remove());
+}
+
+// Show answer feedback for current post-quiz question
+function showPostQuizAnswerFeedback() {
+    const question = postQuizData[postQuizState.currentQuestion];
+    const selectedAnswer = postQuizState.answers[postQuizState.currentQuestion];
+    const isCorrect = selectedAnswer !== undefined && selectedAnswer === question.correct;
+    
+    // Update score
+    if (isCorrect) {
+        postQuizState.score++;
+    }
+    
+    // Show answer feedback
+    const optionsContainer = document.getElementById('post-quiz-options');
+    const nextBtn = document.getElementById('post-quiz-next-btn');
+    const submitBtn = document.getElementById('post-quiz-submit-btn');
+    
+    // Disable all radio buttons
+    const radioButtons = optionsContainer.querySelectorAll('input[type="radio"]');
+    radioButtons.forEach(radio => {
+        radio.disabled = true;
+    });
+    
+    // Highlight correct and incorrect answers
+    const optionElements = optionsContainer.querySelectorAll('.quiz-option');
+    optionElements.forEach((option, index) => {
+        const radio = option.querySelector('input[type="radio"]');
+        const label = option.querySelector('label');
+        
+        if (index === question.correct) {
+            // Correct answer - highlight in green
+            option.style.backgroundColor = '#d4edda';
+            option.style.border = '2px solid #28a745';
+            label.innerHTML = `${question.options[index]} ✓`;
+        } else if (selectedAnswer !== undefined && index === selectedAnswer && !isCorrect) {
+            // Selected wrong answer - highlight in red
+            option.style.backgroundColor = '#f8d7da';
+            option.style.border = '2px solid #dc3545';
+            label.innerHTML = `${question.options[index]} ✗`;
+        } else {
+            // Other options - gray out
+            option.style.backgroundColor = '#f8f9fa';
+            option.style.border = '1px solid #dee2e6';
+            option.style.opacity = '0.6';
+        }
+    });
+    
+    // Don't automatically enable buttons - let the calling function handle this
+}
+
+// Next post-quiz question (called when timer expires)
+function nextPostQuizQuestion() {
+    // Clear timer
+    if (postQuizState.timer) {
+        clearInterval(postQuizState.timer);
+        postQuizState.timer = null;
+    }
+    
+    // Show answer feedback and enable continue button
+    showPostQuizAnswerAndProceed();
+}
+
+// Show answer feedback when user clicks Next Question
+function showPostQuizAnswerAndProceed() {
+    // Clear timer when user clicks Next Question
+    if (postQuizState.timer) {
+        clearInterval(postQuizState.timer);
+        postQuizState.timer = null;
+    }
+    
+    // Show answer feedback first
+    showPostQuizAnswerFeedback();
+    
+    // Change button to "Continue" after showing feedback
+    const nextBtn = document.getElementById('post-quiz-next-btn');
+    const submitBtn = document.getElementById('post-quiz-submit-btn');
+    
+    if (postQuizState.currentQuestion === postQuizData.length - 1) {
+        submitBtn.textContent = 'Finish Quiz';
+        submitBtn.onclick = proceedToNextPostQuizQuestion;
+        submitBtn.disabled = false;
+        nextBtn.style.display = 'none';
+        submitBtn.style.display = 'inline-block';
+    } else {
+        nextBtn.textContent = 'Continue';
+        nextBtn.onclick = proceedToNextPostQuizQuestion;
+        nextBtn.disabled = false;
+    }
+}
+
+// Move to next question after feedback
+function proceedToNextPostQuizQuestion() {
+    // Move to next question
+    postQuizState.currentQuestion++;
+    
+    if (postQuizState.currentQuestion < postQuizData.length) {
+        // Clear any visual feedback from previous question
+        clearPostQuizVisualFeedback();
+        
+        // Reset button states
+        const nextBtn = document.getElementById('post-quiz-next-btn');
+        const submitBtn = document.getElementById('post-quiz-submit-btn');
+        nextBtn.textContent = 'Next Question';
+        nextBtn.onclick = showPostQuizAnswerAndProceed;
+        nextBtn.disabled = true;
+        nextBtn.style.display = 'inline-block';
+        submitBtn.style.display = 'none';
+        
+        // Reset timer for next question
+        postQuizState.timeLeft = 30;
+        postQuizState.warned10 = false;
+        postQuizState.warned5 = false;
+        document.getElementById('post-quiz-timer').textContent = postQuizState.timeLeft;
+        displayPostQuizQuestion();
+        startPostQuizTimer();
+    } else {
+        // Quiz completed
+        submitPostQuiz();
+    }
+}
+
+// Submit post-quiz
+function submitPostQuiz() {
+    // Clear timer
+    if (postQuizState.timer) {
+        clearInterval(postQuizState.timer);
+        postQuizState.timer = null;
+    }
+    
+    // Calculate final score
+    const percentage = Math.round((postQuizState.score / postQuizData.length) * 100);
+    
+    // Store post-quiz completion
+    gameState.postQuizCompleted = true;
+    gameState.postQuizScore = percentage;
+    saveGameState();
+    
+    // Show detailed results
+    showPopup(`🎓 POST-QUIZ completed! You scored ${postQuizState.score}/${postQuizData.length} (${percentage}%)! Congratulations on completing all modules!`, 'success');
+    
+    // Show the results page
+    showPage('results');
+    
+    // Update the UI
+    updateUI();
+}
+
+// Check if all modules are completed and show post-quiz
+function checkForPostQuiz() {
+    // Check if all 12 modules are unlocked (completed at least once)
+    const allModulesUnlocked = gameState.unlockedLevels.length === 12;
+    
+    if (allModulesUnlocked && !gameState.postQuizCompleted) {
+        showPopup('🎓 Congratulations! You have completed all 12 modules! Ready for the POST-QUIZ?', 'info');
+        setTimeout(() => {
+            initializePostQuiz();
+            showPostQuizPage();
+        }, 2000);
+    }
+}
+
 // Update user list
 function updateUserList() {
     const userList = document.getElementById('user-list');
@@ -2208,6 +2666,10 @@ function saveCurrentUserData() {
         totalQuizzes: gameState.totalQuizzes,
         achievements: gameState.achievements,
         completedModules: completedModules,
+        preQuizCompleted: gameState.preQuizCompleted,
+        preQuizScore: gameState.preQuizScore,
+        postQuizCompleted: gameState.postQuizCompleted,
+        postQuizScore: gameState.postQuizScore,
         createdAt: gameState.allUsers[gameState.currentUserId].createdAt,
         lastPlayed: new Date().toISOString()
     };
@@ -2728,6 +3190,10 @@ function loadGameState() {
             gameState.scores = user.scores;
             gameState.totalQuizzes = user.totalQuizzes;
             gameState.achievements = user.achievements;
+            gameState.preQuizCompleted = user.preQuizCompleted || false;
+            gameState.preQuizScore = user.preQuizScore || 0;
+            gameState.postQuizCompleted = user.postQuizCompleted || false;
+            gameState.postQuizScore = user.postQuizScore || 0;
             
             // Load completed modules
             if (user.completedModules) {
@@ -2868,6 +3334,16 @@ function startQuiz(moduleId) {
     }
     
     currentQuiz.level = moduleId;
+    
+    if (!quizData[moduleId]) {
+        console.error('Quiz data not found for module:', moduleId);
+        showPopup(`Quiz data not found for ${moduleId}!`, 'error');
+        return;
+    }
+    
+    
+    
+    
     currentQuiz.questions = [...quizData[moduleId]];
     currentQuiz.currentQuestion = 0;
     currentQuiz.score = 0;
@@ -2878,12 +3354,13 @@ function startQuiz(moduleId) {
     currentQuiz.warned10 = false;
     currentQuiz.warned5 = false;
     
+    
     showPage(`${moduleId}-quiz`);
     
     // Wait for DOM to be ready and then display question
     const waitForDOM = () => {
-        const questionContainer = document.getElementById(`${moduleId}-question-container`) || document.getElementById('question-container');
-        const optionsContainer = document.getElementById(`${moduleId}-options-container`) || document.getElementById('options-container');
+        const questionContainer = document.getElementById(`${moduleId}-question-container`);
+        const optionsContainer = document.getElementById(`${moduleId}-options-container`);
         
         if (questionContainer && optionsContainer) {
             displayQuestion(moduleId);
@@ -2897,12 +3374,12 @@ function startQuiz(moduleId) {
 
 // Display current question
 function displayQuestion(level) {
-    // Try module-specific IDs first, then fall back to generic IDs
-    const questionContainer = document.getElementById(`${level}-question-container`) || document.getElementById('question-container');
-    const optionsContainer = document.getElementById(`${level}-options-container`) || document.getElementById('options-container');
-    const progressBar = document.getElementById(`${level}-progress-fill`) || document.getElementById('quiz-progress-bar');
-    const currentQuestionSpan = document.getElementById(`${level}-current-question`) || document.getElementById('current-question');
-    const totalQuestionsSpan = document.getElementById(`${level}-total-questions`) || document.getElementById('total-questions');
+    // Use module-specific IDs only
+    const questionContainer = document.getElementById(`${level}-question-container`);
+    const optionsContainer = document.getElementById(`${level}-options-container`);
+    const progressBar = document.getElementById(`${level}-progress-fill`);
+    const currentQuestionSpan = document.getElementById(`${level}-current-question`);
+    const totalQuestionsSpan = document.getElementById(`${level}-total-questions`);
     
     if (!questionContainer || !optionsContainer) {
         return;
@@ -2911,8 +3388,19 @@ function displayQuestion(level) {
     const question = currentQuiz.questions[currentQuiz.currentQuestion];
     const progress = ((currentQuiz.currentQuestion + 1) / currentQuiz.questions.length) * 100;
     
+    // Check if question exists
+    if (!question) {
+        console.error('Question is undefined!', {
+            level,
+            currentQuestion: currentQuiz.currentQuestion,
+            questionsLength: currentQuiz.questions.length
+        });
+        return;
+    }
+    
+    
     // Update question text
-    const questionText = document.getElementById(`${level}-question-text`) || document.getElementById('question-text');
+    const questionText = document.getElementById(`${level}-question-text`);
     if (questionText) {
         questionText.textContent = question.question;
     } else {
@@ -2929,6 +3417,13 @@ function displayQuestion(level) {
     
     // Clear and populate options
     optionsContainer.innerHTML = '';
+    
+    
+    if (!question.options || !Array.isArray(question.options)) {
+        console.error('Options is not an array!', question.options);
+        return;
+    }
+    
     question.options.forEach((option, index) => {
         const optionElement = document.createElement('div');
         optionElement.className = 'option';
@@ -2966,7 +3461,7 @@ function displayQuestion(level) {
     }
     
     // Update question counter
-    const currentQuestionElement = document.getElementById(`${level}-current-question`) || document.getElementById('current-question');
+    const currentQuestionElement = document.getElementById(`${level}-current-question`);
     if (currentQuestionElement) {
         currentQuestionElement.textContent = currentQuiz.currentQuestion + 1;
     }
@@ -3053,12 +3548,12 @@ function submitAnswer(moduleId) {
     });
     
     // Show next question button or finish quiz
-    const nextButton = document.getElementById(`${moduleId}-next-question`) || document.getElementById('next-question');
+    const nextButton = document.getElementById(`${moduleId}-next-question`);
     if (nextButton) {
         nextButton.classList.remove('hidden');
     }
     
-    const submitButton = document.getElementById(`${moduleId}-submit-answer`) || document.getElementById('submit-answer');
+    const submitButton = document.getElementById(`${moduleId}-submit-answer`);
     if (submitButton) {
         submitButton.classList.add('hidden');
     }
@@ -3094,8 +3589,8 @@ function nextQuestion(moduleId) {
             input.disabled = false;
         });
         // Hide next button and show submit button
-        const nextButton = document.getElementById(`${moduleId}-next-question`) || document.getElementById('next-question');
-        const submitButton = document.getElementById(`${moduleId}-submit-answer`) || document.getElementById('submit-answer');
+        const nextButton = document.getElementById(`${moduleId}-next-question`);
+        const submitButton = document.getElementById(`${moduleId}-submit-answer`);
         if (nextButton) nextButton.classList.add('hidden');
         if (submitButton) submitButton.classList.remove('hidden');
     } else {
@@ -3136,6 +3631,9 @@ function finishQuiz(moduleId) {
         }
     }
     
+    // Check if all modules are completed and show post-quiz
+    checkForPostQuiz();
+    
     // Update high scores with accurate data
     updateHighScores(gameState.playerName, percentage, moduleNumber);
     
@@ -3164,11 +3662,46 @@ function finishQuiz(moduleId) {
 
 // Continue to next unlocked quiz
 function continueToNextQuiz() {
-    // Find the next unlocked module
-    const currentModuleNumber = parseInt(currentQuiz.level.replace('module-', ''));
-    const nextModuleNumber = currentModuleNumber + 1;
+    // Find the next module that needs to be completed
+    let nextModuleNumber = null;
     
-    if (nextModuleNumber <= 12 && gameState.unlockedLevels.includes(nextModuleNumber)) {
+    // First, try to find the next module after the current one
+    if (currentQuiz && currentQuiz.level) {
+        const currentModuleNumber = parseInt(currentQuiz.level.replace('module-', ''));
+        
+        // Look for the next module after the current one
+        for (let i = currentModuleNumber + 1; i <= 12; i++) {
+            if (gameState.unlockedLevels.includes(i)) {
+                const moduleId = `module-${i}`;
+                const score = gameState.scores[moduleId] || 0;
+                
+                // If this module is unlocked but not passed (score < 70), start it
+                if (score < 70) {
+                    nextModuleNumber = i;
+                    break;
+                }
+            }
+        }
+    }
+    
+    // If no next module found after current one, look for any incomplete module
+    if (!nextModuleNumber) {
+        for (let i = 1; i <= 12; i++) {
+            if (gameState.unlockedLevels.includes(i)) {
+                const moduleId = `module-${i}`;
+                const score = gameState.scores[moduleId] || 0;
+                
+                // If this module is unlocked but not passed (score < 70), start it
+                if (score < 70) {
+                    nextModuleNumber = i;
+                    break;
+                }
+            }
+        }
+    }
+    
+    // Check if we found a valid next module
+    if (nextModuleNumber && nextModuleNumber <= 12 && gameState.unlockedLevels.includes(nextModuleNumber)) {
         // Start the next quiz automatically
         startQuiz(`module-${nextModuleNumber}`);
     } else {
