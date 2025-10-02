@@ -1390,7 +1390,6 @@ document.addEventListener('DOMContentLoaded', function() {
             // Add navigation feedback
             if (pageId === 'quizzes') {
                 if (gameState.preQuizCompleted) {
-                    showPage(pageId);
                     showPopup('Select a module to start your quiz! 📚', 'info');
                 } else {
                     showPreQuizModal();
@@ -1448,8 +1447,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     if (quizzesCard) {
         quizzesCard.addEventListener('click', function() {
-            showPopup('Choose a module to start your quiz! 📚', 'info');
-            showPage('quizzes');
+            showPreQuizModal();
         });
     }
     
@@ -1748,7 +1746,9 @@ let preQuizState = {
     answers: [],
     startTime: 0,
     timeLeft: 30,
-    timer: null
+    timer: null,
+    warned10: false,
+    warned5: false
 };
 
 // Start pre-quiz
@@ -1766,7 +1766,9 @@ function initializePreQuiz() {
         answers: [],
         startTime: Date.now(),
         timeLeft: 30,
-        timer: null
+        timer: null,
+        warned10: false,
+        warned5: false
     };
     
     // Clear any existing visual feedback
@@ -1816,11 +1818,7 @@ function displayPreQuizQuestion() {
             nextBtn.disabled = false;
             preQuizState.answers[preQuizState.currentQuestion] = parseInt(this.value);
             
-            // Clear timer when user selects an answer
-            if (preQuizState.timer) {
-                clearInterval(preQuizState.timer);
-                preQuizState.timer = null;
-            }
+            // Keep timer running - don't clear it when answer is selected
         });
     });
     
@@ -1842,15 +1840,100 @@ function displayPreQuizQuestion() {
 
 // Start pre-quiz timer
 function startPreQuizTimer() {
+    // Clear any existing timer
+    if (preQuizState.timer) {
+        clearInterval(preQuizState.timer);
+    }
+    
+    const startTime = Date.now();
+    const duration = 30000; // 30 seconds per question in milliseconds
+    
+    // Store start time for accurate calculations
+    preQuizState.startTime = startTime;
+    preQuizState.timeLeft = 30;
+    
+    // Update timer immediately
+    updatePreQuizTimer();
+    
+    // Use high-frequency updates for smooth display
     preQuizState.timer = setInterval(() => {
-        preQuizState.timeLeft--;
-        document.getElementById('pre-quiz-timer').textContent = preQuizState.timeLeft;
+        const elapsed = Date.now() - startTime;
+        const remaining = Math.max(0, duration - elapsed);
         
-        if (preQuizState.timeLeft <= 0) {
+        // Calculate time left in seconds (more accurate)
+        preQuizState.timeLeft = Math.ceil(remaining / 1000);
+        
+        updatePreQuizTimer();
+        
+        // Check if time is up
+        if (remaining <= 0) {
             clearInterval(preQuizState.timer);
+            preQuizState.timer = null;
             nextPreQuizQuestion(); // This will show answer feedback
         }
-    }, 1000);
+    }, 50); // Update every 50ms for smooth display
+}
+
+// Update pre-quiz timer display
+function updatePreQuizTimer() {
+    const timerElement = document.getElementById('pre-quiz-timer');
+    if (!timerElement) return;
+    
+    // Ensure timeLeft is never negative
+    const timeLeft = Math.max(0, preQuizState.timeLeft);
+    
+    // Format display - show actual countdown timer
+    timerElement.textContent = timeLeft;
+    
+    // Add visual warning when time is low
+    if (timeLeft <= 10) {
+        addPreQuizTimerWarning();
+        
+        // Show urgent time warnings (only once per warning)
+        if (timeLeft === 10 && !preQuizState.warned10) {
+            preQuizState.warned10 = true;
+            showPopup('Hurry up! Only 10 seconds left! ⚡', 'warning');
+        } else if (timeLeft === 5 && !preQuizState.warned5) {
+            preQuizState.warned5 = true;
+            showPopup('Last 5 seconds! Quick! 🚨', 'error');
+        }
+    } else {
+        removePreQuizTimerWarning();
+        // Reset warning flags when time is above 10
+        if (timeLeft > 10) {
+            preQuizState.warned10 = false;
+            preQuizState.warned5 = false;
+        }
+    }
+    
+    // Add critical warning for last 3 seconds
+    if (timeLeft <= 3) {
+        timerElement.style.color = '#dc3545';
+        timerElement.style.fontWeight = 'bold';
+        timerElement.style.animation = 'pulse 0.5s infinite';
+    } else {
+        timerElement.style.color = '';
+        timerElement.style.fontWeight = '';
+        timerElement.style.animation = '';
+    }
+}
+
+// Add pre-quiz timer warning
+function addPreQuizTimerWarning() {
+    const timerElement = document.getElementById('pre-quiz-timer');
+    if (timerElement) {
+        timerElement.style.color = '#ffc107';
+        timerElement.style.fontWeight = 'bold';
+    }
+}
+
+// Remove pre-quiz timer warning
+function removePreQuizTimerWarning() {
+    const timerElement = document.getElementById('pre-quiz-timer');
+    if (timerElement) {
+        timerElement.style.color = '';
+        timerElement.style.fontWeight = '';
+    }
 }
 
 // Clear visual feedback from pre-quiz options
@@ -1954,6 +2037,12 @@ function nextPreQuizQuestion() {
 
 // Show answer feedback when user clicks Next Question
 function showAnswerAndProceed() {
+    // Clear timer when user clicks Next Question
+    if (preQuizState.timer) {
+        clearInterval(preQuizState.timer);
+        preQuizState.timer = null;
+    }
+    
     // Show answer feedback first
     showPreQuizAnswerFeedback();
     
@@ -1994,6 +2083,8 @@ function proceedToNextPreQuizQuestion() {
         
         // Reset timer for next question
         preQuizState.timeLeft = 30;
+        preQuizState.warned10 = false;
+        preQuizState.warned5 = false;
         document.getElementById('pre-quiz-timer').textContent = preQuizState.timeLeft;
         displayPreQuizQuestion();
         startPreQuizTimer();
@@ -2017,13 +2108,27 @@ function submitPreQuiz() {
     // Store pre-quiz completion
     gameState.preQuizCompleted = true;
     gameState.preQuizScore = percentage;
+    
+    // Unlock Quiz 1 (Module 1) after pre-quiz completion
+    if (!gameState.unlockedLevels.includes(1)) {
+        gameState.unlockedLevels.push(1);
+    }
+    
     saveGameState();
     
-    // Show results and unlock quizzes
-    showPopup(`Pre-quiz completed! You scored ${percentage}%! Module quizzes are now unlocked! 🎉`, 'success');
+    // Show detailed results
+    showPopup(`🎉 Pre-quiz completed! You scored ${preQuizState.score}/${preQuizData.length} (${percentage}%)! Quiz 1 is now available!`, 'success');
     
-    // Show the quizzes page
+    // Show the quizzes page first
     showPage('quizzes');
+    
+    // Update the UI to show unlocked modules
+    updateModuleCards();
+    
+    // Automatically start Quiz 1 (Module 1) after a short delay
+    setTimeout(() => {
+        startQuiz('module-1');
+    }, 3000); // Wait 3 seconds to show the success message and updated quizzes page
 }
 
 // Update user list
