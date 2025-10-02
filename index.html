@@ -72,6 +72,19 @@
         </div>
     </div>
 
+    <!-- Pre-Quiz Modal -->
+    <div id="pre-quiz-modal" class="pre-quiz-modal" style="display: none;">
+        <div class="name-modal-content">
+            <h2>🎯 Ready to Take Quiz?</h2>
+            <p>You need to take the pre-quiz first to unlock the module quizzes!</p>
+            <p>Click the button below if you're ready to start the 10 pre-quiz questions.</p>
+            <div class="form-actions">
+                <button id="start-pre-quiz-btn" class="name-submit-btn">Start Pre-Quiz</button>
+                <button id="cancel-pre-quiz-btn" class="cancel-user-selection-btn">Cancel</button>
+            </div>
+        </div>
+    </div>
+
     <div class="container">
         <!-- Navigation -->
         <nav class="navbar">
@@ -1078,6 +1091,43 @@
                         <button class="action-btn primary" onclick="continueToNextQuiz()">Continue Learning</button>
                         <button class="action-btn secondary" onclick="showPage('performance')">View Performance</button>
                     </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pre-Quiz Page -->
+        <div id="pre-quiz-page" class="page">
+            <div class="quiz-header">
+                <h2>🎯 Pre-Quiz Assessment</h2>
+                <p>Answer these 10 questions to unlock the module quizzes!</p>
+            </div>
+            
+            <div class="quiz-container">
+                <div class="quiz-progress">
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="pre-quiz-progress"></div>
+                    </div>
+                    <div class="progress-text">
+                        <span id="pre-quiz-question-number">1</span> of 10
+                    </div>
+                </div>
+                
+                <div class="quiz-timer">
+                    <span class="timer-icon">⏱️</span>
+                    <span id="pre-quiz-timer">30</span>s
+                </div>
+                
+                <div class="quiz-question">
+                    <h3 id="pre-quiz-question-text">Question will appear here</h3>
+                </div>
+                
+                <div class="quiz-options" id="pre-quiz-options">
+                    <!-- Options will be populated by JavaScript -->
+                </div>
+                
+                <div class="quiz-actions">
+                    <button id="pre-quiz-next-btn" class="quiz-btn primary" onclick="showAnswerAndProceed()" disabled>Next Question</button>
+                    <button id="pre-quiz-submit-btn" class="quiz-btn primary" onclick="submitPreQuiz()" style="display: none;">Submit Quiz</button>
                 </div>
             </div>
         </div>

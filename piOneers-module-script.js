@@ -7,7 +7,9 @@ let gameState = {
     totalQuizzes: 0,
     achievements: [],
     allUsers: {},
-    currentUserId: null
+    currentUserId: null,
+    preQuizCompleted: false,
+    preQuizScore: 0
 };
 
 // High Scores Database
@@ -1387,7 +1389,13 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Add navigation feedback
             if (pageId === 'quizzes') {
-                showPopup('Select a module to start your quiz! 📚', 'info');
+                if (gameState.preQuizCompleted) {
+                    showPage(pageId);
+                    showPopup('Select a module to start your quiz! 📚', 'info');
+                } else {
+                    showPreQuizModal();
+                    return; // Don't show the page yet, wait for pre-quiz completion
+                }
             } else if (pageId === 'performance') {
                 showPopup('Check your progress and achievements! 📊', 'info');
             } else if (pageId === 'leaderboard') {
@@ -1550,6 +1558,17 @@ document.addEventListener('DOMContentLoaded', function() {
         nameCancelBtn.addEventListener('click', handleNameCancel);
     }
     
+    // Pre-quiz modal event listeners
+    const startPreQuizBtn = document.getElementById('start-pre-quiz-btn');
+    if (startPreQuizBtn) {
+        startPreQuizBtn.addEventListener('click', startPreQuiz);
+    }
+    
+    const cancelPreQuizBtn = document.getElementById('cancel-pre-quiz-btn');
+    if (cancelPreQuizBtn) {
+        cancelPreQuizBtn.addEventListener('click', hidePreQuizModal);
+    }
+    
     // Add popup for first-time users
     if (!gameState.playerName) {
         setTimeout(() => {
@@ -1613,6 +1632,398 @@ function showUserSelectionModal() {
 // Hide user selection modal
 function hideUserSelectionModal() {
     document.getElementById('user-selection-modal').style.display = 'none';
+}
+
+// Show pre-quiz modal
+function showPreQuizModal() {
+    document.getElementById('pre-quiz-modal').style.display = 'flex';
+}
+
+// Hide pre-quiz modal
+function hidePreQuizModal() {
+    document.getElementById('pre-quiz-modal').style.display = 'none';
+}
+
+// Pre-quiz data
+const preQuizData = [
+    {
+        question: "It is a rule that relates values from a set to second set of value.",
+        options: [
+            "a. Function",
+            "b. relation",
+            "c. composition"
+        ],
+        correct: 1, // Index of correct answer (0-based)
+        explanation: "A relation is a general rule that connects elements from one set to another. A function is a special type of relation where each input has exactly one output."
+    },
+    {
+        question: "A relation where each element of the domain is related to only one value.",
+        options: [
+            "a. Function",
+            "b. relation", 
+            "c. composition"
+        ],
+        correct: 0,
+        explanation: "A function is a special type of relation where each input (domain element) corresponds to exactly one output (range element). This is the key characteristic that distinguishes functions from general relations."
+    },
+    {
+        question: "A line that represents a graph is a function in the Cartesian plane.",
+        options: [
+            "a. Horizontal line test",
+            "b. straight line test",
+            "c. vertical line test"
+        ],
+        correct: 2,
+        explanation: "The vertical line test is used to determine if a graph represents a function. If any vertical line intersects the graph more than once, it's not a function because that would mean one input has multiple outputs."
+    },
+    {
+        question: "Which of the following relations are functions?",
+        options: [
+            "a. (1,2) (3,2) (3,5)",
+            "b. (2,3) (1,4) (2,1)",
+            "c. (3,4) (2,3) (1,2)"
+        ],
+        correct: 2
+    },
+    {
+        question: "Which of the following relations are not functions?",
+        options: [
+            "a. (1,5) (3,2) (3,5)",
+            "b. (4,3) (1,4) (2,1)",
+            "c. (3,4) (2,3) (1,2)"
+        ],
+        correct: 0
+    },
+    {
+        question: "Which of the following relations are functions?",
+        options: [
+            "a. (0,3) (3,2) (4,5)",
+            "b. (2,3) (1,4) (2,1)",
+            "c. (3,4) (2,3) (3,2)"
+        ],
+        correct: 0
+    },
+    {
+        question: "Which of the following represents a function?",
+        options: [
+            "a. Y= 2x + 1",
+            "b. x² + y²=1",
+            "c. y = x² + y²"
+        ],
+        correct: 0
+    },
+    {
+        question: "Which of the following is not a function?",
+        options: [
+            "a. Y= 2x + 1",
+            "b. x² + y²=1",
+            "c. y = x²-2x+2"
+        ],
+        correct: 1
+    },
+    {
+        question: "Which of the following represents a function?",
+        options: [
+            "a. Y=x²",
+            "b. 3x + y=1",
+            "c. y = x² + y²"
+        ],
+        correct: 1
+    },
+    {
+        question: "Give a function C that can represent the cost of buying x meals, if one meal costs P40.",
+        options: [
+            "a. X = C (40)",
+            "b. C(x) = 40x",
+            "c. x (40) = C"
+        ],
+        correct: 1
+    }
+];
+
+// Pre-quiz state
+let preQuizState = {
+    currentQuestion: 0,
+    score: 0,
+    answers: [],
+    startTime: 0,
+    timeLeft: 30,
+    timer: null
+};
+
+// Start pre-quiz
+function startPreQuiz() {
+    hidePreQuizModal();
+    initializePreQuiz();
+    showPreQuizPage();
+}
+
+// Initialize pre-quiz
+function initializePreQuiz() {
+    preQuizState = {
+        currentQuestion: 0,
+        score: 0,
+        answers: [],
+        startTime: Date.now(),
+        timeLeft: 30,
+        timer: null
+    };
+    
+    // Clear any existing visual feedback
+    clearPreQuizVisualFeedback();
+}
+
+// Show pre-quiz page
+function showPreQuizPage() {
+    showPage('pre-quiz-page');
+    displayPreQuizQuestion();
+    startPreQuizTimer();
+}
+
+// Display current pre-quiz question
+function displayPreQuizQuestion() {
+    const question = preQuizData[preQuizState.currentQuestion];
+    const questionText = document.getElementById('pre-quiz-question-text');
+    const optionsContainer = document.getElementById('pre-quiz-options');
+    const questionNumber = document.getElementById('pre-quiz-question-number');
+    const progressFill = document.getElementById('pre-quiz-progress');
+    const nextBtn = document.getElementById('pre-quiz-next-btn');
+    const submitBtn = document.getElementById('pre-quiz-submit-btn');
+    
+    // Update question number and progress
+    questionNumber.textContent = preQuizState.currentQuestion + 1;
+    progressFill.style.width = `${((preQuizState.currentQuestion + 1) / preQuizData.length) * 100}%`;
+    
+    // Display question
+    questionText.textContent = question.question;
+    
+    // Clear and populate options
+    optionsContainer.innerHTML = '';
+    question.options.forEach((option, index) => {
+        const optionElement = document.createElement('div');
+        optionElement.className = 'quiz-option';
+        optionElement.innerHTML = `
+            <input type="radio" name="pre-quiz-answer" value="${index}" id="pre-quiz-option-${index}">
+            <label for="pre-quiz-option-${index}">${option}</label>
+        `;
+        optionsContainer.appendChild(optionElement);
+    });
+    
+    // Add event listeners to options
+    const radioButtons = optionsContainer.querySelectorAll('input[type="radio"]');
+    radioButtons.forEach(radio => {
+        radio.addEventListener('change', function() {
+            nextBtn.disabled = false;
+            preQuizState.answers[preQuizState.currentQuestion] = parseInt(this.value);
+            
+            // Clear timer when user selects an answer
+            if (preQuizState.timer) {
+                clearInterval(preQuizState.timer);
+                preQuizState.timer = null;
+            }
+        });
+    });
+    
+    // Show/hide buttons
+    if (preQuizState.currentQuestion === preQuizData.length - 1) {
+        nextBtn.style.display = 'none';
+        submitBtn.style.display = 'inline-block';
+    } else {
+        nextBtn.style.display = 'inline-block';
+        submitBtn.style.display = 'none';
+    }
+    
+    // Reset button state
+    nextBtn.disabled = true;
+    
+    // Reset timer display
+    document.getElementById('pre-quiz-timer').textContent = preQuizState.timeLeft;
+}
+
+// Start pre-quiz timer
+function startPreQuizTimer() {
+    preQuizState.timer = setInterval(() => {
+        preQuizState.timeLeft--;
+        document.getElementById('pre-quiz-timer').textContent = preQuizState.timeLeft;
+        
+        if (preQuizState.timeLeft <= 0) {
+            clearInterval(preQuizState.timer);
+            nextPreQuizQuestion(); // This will show answer feedback
+        }
+    }, 1000);
+}
+
+// Clear visual feedback from pre-quiz options
+function clearPreQuizVisualFeedback() {
+    const optionsContainer = document.getElementById('pre-quiz-options');
+    const optionElements = optionsContainer.querySelectorAll('.quiz-option');
+    
+    optionElements.forEach(option => {
+        const label = option.querySelector('label');
+        // Reset styles
+        option.style.backgroundColor = '';
+        option.style.border = '';
+        option.style.opacity = '';
+        // Reset label content (remove checkmarks and X marks)
+        if (label) {
+            label.innerHTML = label.innerHTML.replace(/[✓✗]\s*$/, '');
+        }
+    });
+    
+    // Remove any explanation divs
+    const explanationDivs = optionsContainer.querySelectorAll('.answer-explanation');
+    explanationDivs.forEach(div => div.remove());
+}
+
+// Show answer feedback for current question
+function showPreQuizAnswerFeedback() {
+    const question = preQuizData[preQuizState.currentQuestion];
+    const selectedAnswer = preQuizState.answers[preQuizState.currentQuestion];
+    const isCorrect = selectedAnswer !== undefined && selectedAnswer === question.correct;
+    
+    // Update score
+    if (isCorrect) {
+        preQuizState.score++;
+    }
+    
+    // Show answer feedback
+    const optionsContainer = document.getElementById('pre-quiz-options');
+    const nextBtn = document.getElementById('pre-quiz-next-btn');
+    const submitBtn = document.getElementById('pre-quiz-submit-btn');
+    
+    // Disable all radio buttons
+    const radioButtons = optionsContainer.querySelectorAll('input[type="radio"]');
+    radioButtons.forEach(radio => {
+        radio.disabled = true;
+    });
+    
+    // Highlight correct and incorrect answers
+    const optionElements = optionsContainer.querySelectorAll('.quiz-option');
+    optionElements.forEach((option, index) => {
+        const radio = option.querySelector('input[type="radio"]');
+        const label = option.querySelector('label');
+        
+        if (index === question.correct) {
+            // Correct answer - highlight in green
+            option.style.backgroundColor = '#d4edda';
+            option.style.border = '2px solid #28a745';
+            label.innerHTML = `${question.options[index]} ✓`;
+        } else if (selectedAnswer !== undefined && index === selectedAnswer && !isCorrect) {
+            // Selected wrong answer - highlight in red
+            option.style.backgroundColor = '#f8d7da';
+            option.style.border = '2px solid #dc3545';
+            label.innerHTML = `${question.options[index]} ✗`;
+        } else {
+            // Other options - gray out
+            option.style.backgroundColor = '#f8f9fa';
+            option.style.border = '1px solid #dee2e6';
+            option.style.opacity = '0.6';
+        }
+    });
+    
+    // Show explanation if available
+    if (question.explanation) {
+        const explanationDiv = document.createElement('div');
+        explanationDiv.className = 'answer-explanation';
+        explanationDiv.style.cssText = `
+            margin-top: 15px;
+            padding: 10px;
+            background-color: #e7f3ff;
+            border-left: 4px solid #007bff;
+            border-radius: 4px;
+            font-style: italic;
+        `;
+        explanationDiv.innerHTML = `<strong>Explanation:</strong> ${question.explanation}`;
+        optionsContainer.appendChild(explanationDiv);
+    }
+    
+    // Don't automatically enable buttons - let the calling function handle this
+}
+
+// Next pre-quiz question (called when timer expires)
+function nextPreQuizQuestion() {
+    // Clear timer
+    if (preQuizState.timer) {
+        clearInterval(preQuizState.timer);
+        preQuizState.timer = null;
+    }
+    
+    // Show answer feedback and enable continue button
+    showAnswerAndProceed();
+}
+
+// Show answer feedback when user clicks Next Question
+function showAnswerAndProceed() {
+    // Show answer feedback first
+    showPreQuizAnswerFeedback();
+    
+    // Change button to "Continue" after showing feedback
+    const nextBtn = document.getElementById('pre-quiz-next-btn');
+    const submitBtn = document.getElementById('pre-quiz-submit-btn');
+    
+    if (preQuizState.currentQuestion === preQuizData.length - 1) {
+        submitBtn.textContent = 'Finish Quiz';
+        submitBtn.onclick = proceedToNextPreQuizQuestion;
+        submitBtn.disabled = false;
+        nextBtn.style.display = 'none';
+        submitBtn.style.display = 'inline-block';
+    } else {
+        nextBtn.textContent = 'Continue';
+        nextBtn.onclick = proceedToNextPreQuizQuestion;
+        nextBtn.disabled = false;
+    }
+}
+
+// Move to next question after feedback
+function proceedToNextPreQuizQuestion() {
+    // Move to next question
+    preQuizState.currentQuestion++;
+    
+    if (preQuizState.currentQuestion < preQuizData.length) {
+        // Clear any visual feedback from previous question
+        clearPreQuizVisualFeedback();
+        
+        // Reset button states
+        const nextBtn = document.getElementById('pre-quiz-next-btn');
+        const submitBtn = document.getElementById('pre-quiz-submit-btn');
+        nextBtn.textContent = 'Next Question';
+        nextBtn.onclick = showAnswerAndProceed;
+        nextBtn.disabled = true;
+        nextBtn.style.display = 'inline-block';
+        submitBtn.style.display = 'none';
+        
+        // Reset timer for next question
+        preQuizState.timeLeft = 30;
+        document.getElementById('pre-quiz-timer').textContent = preQuizState.timeLeft;
+        displayPreQuizQuestion();
+        startPreQuizTimer();
+    } else {
+        // Quiz completed
+        submitPreQuiz();
+    }
+}
+
+// Submit pre-quiz
+function submitPreQuiz() {
+    // Clear timer
+    if (preQuizState.timer) {
+        clearInterval(preQuizState.timer);
+        preQuizState.timer = null;
+    }
+    
+    // Calculate final score
+    const percentage = Math.round((preQuizState.score / preQuizData.length) * 100);
+    
+    // Store pre-quiz completion
+    gameState.preQuizCompleted = true;
+    gameState.preQuizScore = percentage;
+    saveGameState();
+    
+    // Show results and unlock quizzes
+    showPopup(`Pre-quiz completed! You scored ${percentage}%! Module quizzes are now unlocked! 🎉`, 'success');
+    
+    // Show the quizzes page
+    showPage('quizzes');
 }
 
 // Update user list
