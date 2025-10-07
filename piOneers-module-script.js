@@ -3011,15 +3011,12 @@ function autoProceedToNextQuestion(level) {
         if (index === question.correct) {
             // Correct answer - always green
             option.classList.add('correct');
-            if (label) {
+            if (label && question.options && question.options[index]) {
                 label.innerHTML = `✅ ${question.options[index]}`;
             }
         } else {
-            // Other wrong options - show as wrong but not selected
-            option.classList.add('selected-wrong');
-            if (label) {
-                label.innerHTML = `❌ ${question.options[index]}`;
-            }
+            // Other options - keep neutral (no special styling)
+            // Don't add any classes or modify the label
         }
     });
     
@@ -3557,28 +3554,18 @@ function submitAnswer(moduleId) {
         if (index === question.correct) {
             // Correct answer - always green
             option.classList.add('correct');
-            if (label) {
+            if (label && question.options && question.options[index]) {
                 label.innerHTML = `✅ ${question.options[index]}`;
             }
         } else if (index === answer && !isCorrect) {
             // User's wrong answer - red
             option.classList.add('incorrect');
-            if (label) {
-                label.innerHTML = `❌ ${question.options[index]}`;
-            }
-        } else if (index === answer && isCorrect) {
-            // User's correct answer - green with checkmark
-            option.classList.add('correct');
-            if (label) {
-                label.innerHTML = `✅ ${question.options[index]}`;
-            }
-        } else {
-            // Other wrong options - show as wrong but not selected
-            option.classList.add('selected-wrong');
-            if (label) {
+            if (label && question.options && question.options[index]) {
                 label.innerHTML = `❌ ${question.options[index]}`;
             }
         }
+        // Note: If user selected correct answer, it's already handled by the first condition
+        // Other options remain neutral
     });
     
     // Disable all options
@@ -3691,6 +3678,11 @@ function finishQuiz(moduleId) {
 
 // Continue to next unlocked quiz
 function continueToNextQuiz() {
+    console.log('continueToNextQuiz called!');
+    console.log('Current quiz level:', currentQuiz ? currentQuiz.level : 'No current quiz');
+    console.log('Unlocked levels:', gameState.unlockedLevels);
+    console.log('Scores:', gameState.scores);
+    
     // Find the next module that needs to be completed
     let nextModuleNumber = null;
     
@@ -3730,10 +3722,15 @@ function continueToNextQuiz() {
     }
     
     // Check if we found a valid next module
+    console.log('Next module number found:', nextModuleNumber);
+    
     if (nextModuleNumber && nextModuleNumber <= 12 && gameState.unlockedLevels.includes(nextModuleNumber)) {
+        console.log('Starting next quiz:', `module-${nextModuleNumber}`);
+        showPopup(`Starting Module ${nextModuleNumber}! 🚀`, 'info');
         // Start the next quiz automatically
         startQuiz(`module-${nextModuleNumber}`);
     } else {
+        console.log('No next quiz available, going to quizzes page');
         // If no next quiz available, go to quizzes page
         showPage('quizzes');
         showPopup('All modules completed! Great job! 🎉', 'success');
@@ -3801,6 +3798,20 @@ function showQuizResults(moduleId, score, correctAnswers, totalQuestions) {
     setTimeout(() => {
         if (score >= 70) {
             showPopup('Congratulations! You passed the module! 🎉', 'success');
+            
+            // Auto-start next quiz if not the last module
+            if (moduleNumber < 12) {
+                setTimeout(() => {
+                    const nextModule = `module-${moduleNumber + 1}`;
+                    showPopup(`Starting ${nextModule.replace('module-', 'Module ')} automatically! 🚀`, 'info');
+                    startQuiz(nextModule);
+                }, 3000); // Wait 3 seconds after success message
+            } else {
+                // All modules completed
+                setTimeout(() => {
+                    showPopup('🎉 Congratulations! You\'ve completed all modules! 🏆', 'success');
+                }, 3000);
+            }
         } else {
             showPopup('Keep learning! Review the lesson and try again! 📚', 'warning');
         }
