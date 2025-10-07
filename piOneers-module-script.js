@@ -1447,7 +1447,20 @@ document.addEventListener('DOMContentLoaded', function() {
     
     if (quizzesCard) {
         quizzesCard.addEventListener('click', function() {
-            showPreQuizModal();
+            // Check if user is currently taking a quiz
+            if (isUserCurrentlyTakingQuiz()) {
+                // Resume the current quiz
+                const currentModule = currentQuiz.level;
+                if (currentModule) {
+                    showPage(`${currentModule}-quiz`);
+                    showPopup(`Resuming ${currentModule.replace('module-', 'Module ')} quiz! 🎯`, 'info');
+                }
+            } else if (gameState.preQuizCompleted) {
+                showPage('quizzes');
+                showPopup('Select a module to start your quiz! 📚', 'info');
+            } else {
+                showPreQuizModal();
+            }
         });
     }
     
@@ -3398,6 +3411,10 @@ function displayQuestion(level) {
         return;
     }
     
+    // Debug: Log the question object
+    console.log('Current question object:', question);
+    console.log('Question options:', question.options);
+    
     
     // Update question text
     const questionText = document.getElementById(`${level}-question-text`);
@@ -3425,13 +3442,35 @@ function displayQuestion(level) {
     }
     
     question.options.forEach((option, index) => {
+        console.log(`Option ${index}:`, option);
         const optionElement = document.createElement('div');
         optionElement.className = 'option';
-        optionElement.innerHTML = `
-            <input type="radio" name="answer" value="${index}" id="${level}-option-${index}">
-            <label for="${level}-option-${index}">${option}</label>
-        `;
+        
+        // Create input element
+        const input = document.createElement('input');
+        input.type = 'radio';
+        input.name = 'answer';
+        input.value = index;
+        input.id = `${level}-option-${index}`;
+        
+        // Create label element
+        const label = document.createElement('label');
+        label.htmlFor = `${level}-option-${index}`;
+        label.textContent = option; // Use textContent instead of innerHTML
+        
+        // Append elements
+        optionElement.appendChild(input);
+        optionElement.appendChild(label);
         optionsContainer.appendChild(optionElement);
+        
+        // Debug: Check if the label was created correctly
+        setTimeout(() => {
+            console.log(`Label ${index} content after creation:`, label.textContent);
+            // Check if the label still has the correct content after 1 second
+            setTimeout(() => {
+                console.log(`Label ${index} content after 1 second:`, label.textContent);
+            }, 1000);
+        }, 100);
     });
     
     // Clear any existing visual feedback classes from the container
@@ -3572,17 +3611,7 @@ function nextQuestion(moduleId) {
     currentQuiz.currentQuestion++;
     
     if (currentQuiz.currentQuestion < currentQuiz.questions.length) {
-        // Clear any visual feedback from previous question before showing new one
-        document.querySelectorAll('.option').forEach(option => {
-            option.classList.remove('correct', 'incorrect', 'selected-wrong', 'selected');
-            const label = option.querySelector('label');
-            if (label) {
-                // Remove emoji prefixes and restore original text
-                const text = label.textContent.replace(/^[✅❌]\s*/, '');
-                label.textContent = text;
-            }
-        });
-        
+        // Display the new question (this will clear and recreate all options)
         displayQuestion(moduleId);
         // Re-enable options for new question
         document.querySelectorAll('input[name="answer"]').forEach(input => {
