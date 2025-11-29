@@ -3001,7 +3001,8 @@ function autoProceedToNextQuestion(level) {
     
     // Show correct answer visually
     const question = currentQuiz.questions[currentQuiz.currentQuestion];
-    document.querySelectorAll('input[name="answer"]').forEach((input, index) => {
+    const optionInputs = document.querySelectorAll(`#${level}-options-container input[name="${level}-answer"]`);
+    optionInputs.forEach((input, index) => {
         const option = input.parentElement;
         const label = option.querySelector('label');
         
@@ -3012,7 +3013,7 @@ function autoProceedToNextQuestion(level) {
             // Correct answer - always green
             option.classList.add('correct');
             if (label && question.options && question.options[index]) {
-                label.innerHTML = `✅ ${question.options[index]}`;
+                setOptionLabelContent(label, question.options[index], '✅');
             }
         } else {
             // Other options - keep neutral (no special styling)
@@ -3021,7 +3022,7 @@ function autoProceedToNextQuestion(level) {
     });
     
     // Disable all options
-    document.querySelectorAll('input[name="answer"]').forEach(input => {
+    optionInputs.forEach(input => {
         input.disabled = true;
     });
     
@@ -3382,6 +3383,22 @@ function startQuiz(moduleId) {
     waitForDOM();
 }
 
+// Helper to detect HTML content inside option strings
+function optionContainsHTML(content) {
+    return typeof content === 'string' && /<[^>]+>/.test(content);
+}
+
+// Helper to render option labels with or without HTML safely
+function setOptionLabelContent(label, content, prefix = '') {
+    if (!label) return;
+    const finalContent = prefix ? `${prefix} ${content}` : content;
+    if (optionContainsHTML(content)) {
+        label.innerHTML = finalContent;
+    } else {
+        label.textContent = finalContent;
+    }
+}
+
 // Display current question
 function displayQuestion(level) {
     // Use module-specific IDs only
@@ -3446,14 +3463,14 @@ function displayQuestion(level) {
         // Create input element
         const input = document.createElement('input');
         input.type = 'radio';
-        input.name = 'answer';
+        input.name = `${level}-answer`;
         input.value = index;
         input.id = `${level}-option-${index}`;
         
         // Create label element
         const label = document.createElement('label');
         label.htmlFor = `${level}-option-${index}`;
-        label.textContent = option; // Use textContent instead of innerHTML
+        setOptionLabelContent(label, option);
         
         // Append elements
         optionElement.appendChild(input);
@@ -3515,7 +3532,10 @@ function displayQuestion(level) {
 
 // Submit answer
 function submitAnswer(moduleId) {
-    const selectedAnswer = document.querySelector('input[name="answer"]:checked');
+    const optionsContainer = document.getElementById(`${moduleId}-options-container`);
+    if (!optionsContainer) return;
+
+    const selectedAnswer = optionsContainer.querySelector(`input[name="${moduleId}-answer"]:checked`);
     
     if (!selectedAnswer) {
         showPopup('Please select an answer before submitting! ⚠️', 'warning');
@@ -3544,7 +3564,8 @@ function submitAnswer(moduleId) {
     }
     
     // Show correct answer visually with enhanced feedback
-    document.querySelectorAll('input[name="answer"]').forEach((input, index) => {
+    const optionInputs = optionsContainer.querySelectorAll(`input[name="${moduleId}-answer"]`);
+    optionInputs.forEach((input, index) => {
         const option = input.parentElement;
         const label = option.querySelector('label');
         
@@ -3555,13 +3576,13 @@ function submitAnswer(moduleId) {
             // Correct answer - always green
             option.classList.add('correct');
             if (label && question.options && question.options[index]) {
-                label.innerHTML = `✅ ${question.options[index]}`;
+                setOptionLabelContent(label, question.options[index], '✅');
             }
         } else if (index === answer && !isCorrect) {
             // User's wrong answer - red
             option.classList.add('incorrect');
             if (label && question.options && question.options[index]) {
-                label.innerHTML = `❌ ${question.options[index]}`;
+                setOptionLabelContent(label, question.options[index], '❌');
             }
         }
         // Note: If user selected correct answer, it's already handled by the first condition
@@ -3569,7 +3590,7 @@ function submitAnswer(moduleId) {
     });
     
     // Disable all options
-    document.querySelectorAll('input[name="answer"]').forEach(input => {
+    optionInputs.forEach(input => {
         input.disabled = true;
     });
     
@@ -3601,7 +3622,8 @@ function nextQuestion(moduleId) {
         // Display the new question (this will clear and recreate all options)
         displayQuestion(moduleId);
         // Re-enable options for new question
-        document.querySelectorAll('input[name="answer"]').forEach(input => {
+        const optionInputs = document.querySelectorAll(`#${moduleId}-options-container input[name="${moduleId}-answer"]`);
+        optionInputs.forEach(input => {
             input.disabled = false;
         });
         // Hide next button and show submit button
