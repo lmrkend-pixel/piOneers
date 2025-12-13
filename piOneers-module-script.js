@@ -36,523 +36,260 @@ let completedModules = {
     'module-2': false,
     'module-3': false,
     'module-4': false,
-    'module-5': false,
-    'module-6': false,
-    'module-7': false,
-    'module-8': false,
-    'module-9': false,
-    'module-10': false,
-    'module-11': false,
-    'module-12': false
+    'module-5': false
 };
 
 const quizData = {
     'module-1': [
         {
-            question: "Which of the following is not true about function?",
+            question: "Can take up a finite number of distinct values",
             options: [
-                "A. Function is composed of two quantities where one depends on the other.",
-                "B. One-to-one correspondence is a function.",
-                "C. Many-to-one correspondence is a function.",
-                "D. One-to-many correspondence is a function."
-            ],
-            correct: 3
-        },
-        {
-            question: "In a relation, what do you call the y values or the output?",
-            options: [
-                "A. Piecewise",
-                "B. Range",
-                "C. Domain",
-                "D. Independent"
-            ],
-            correct: 1
-        },
-        {
-            question: "Which of the following tables is NOT a representation of functions?",
-            options: [
-                "A. <img src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjgwIiB2aWV3Qm94PSIwIDAgMjAwIDgwIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxyZWN0IHdpZHRoPSIyMDAiIGhlaWdodD0iODAiIGZpbGw9IndoaXRlIiBzdHJva2U9ImJsYWNrIiBzdHJva2Utd2lkdGg9IjIiLz48dGV4dCB4PSIxMCIgeT0iMjAiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCI+QTwvdGV4dD48dGV4dCB4PSIzMCIgeT0iMjAiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCI+eDwvdGV4dD48dGV4dCB4PSI2MCIgeT0iMjAiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCI+MjwvdGV4dD48dGV4dCB4PSI4MCIgeT0iMjAiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCI+MTwvdGV4dD48dGV4dCB4PSIxMDAiIHk9IjIwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTQiPjA8L3RleHQ+PHRleHQgeD0iMTIwIiB5PSIyMCIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjE0Ij4xPC90ZXh0Pjx0ZXh0IHg9IjMwIiB5PSI0MCIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjE0Ij55PC90ZXh0Pjx0ZXh0IHg9IjYwIiB5PSI0MCIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjE0Ij4zPC90ZXh0Pjx0ZXh0IHg9IjgwIiB5PSI0MCIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjE0Ij42PC90ZXh0Pjx0ZXh0IHg9IjEwMCIgeT0iNDAiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCI+NzwvdGV4dD48dGV4dCB4PSIxMjAiIHk9IjQwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTQiPjI8L3RleHQ+PC9zdmc+' alt='Table A' style='max-width: 200px; height: auto;'>",
-                "B. <img src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjgwIiB2aWV3Qm94PSIwIDAgMjAwIDgwIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxyZWN0IHdpZHRoPSIyMDAiIGhlaWdodD0iODAiIGZpbGw9IndoaXRlIiBzdHJva2U9ImJsYWNrIiBzdHJva2Utd2lkdGg9IjIiLz48dGV4dCB4PSIxMCIgeT0iMjAiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCI+QjwvdGV4dD48dGV4dCB4PSIzMCIgeT0iMjAiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCI+eDwvdGV4dD48dGV4dCB4PSI2MCIgeT0iMjAiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCI+LTI8L3RleHQ+PHRleHQgeD0iODAiIHk9IjIwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTQiPi0xPC90ZXh0Pjx0ZXh0IHg9IjEwMCIgeT0iMjAiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCI+MDwvdGV4dD48dGV4dCB4PSIxMjAiIHk9IjIwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTQiPjE8L3RleHQ+PHRleHQgeD0iMzAiIHk9IjQwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTQiPnk8L3RleHQ+PHRleHQgeD0iNjAiIHk9IjQwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTQiPjA8L3RleHQ+PHRleHQgeD0iODAiIHk9IjQwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTQiPi0zPC90ZXh0Pjx0ZXh0IHg9IjEwMCIgeT0iNDAiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCI+MDwvdGV4dD48dGV4dCB4PSIxMjAiIHk9IjQwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTQiPjM8L3RleHQ+PC9zdmc+' alt='Table B' style='max-width: 200px; height: auto;'>",
-                "C. <img src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjgwIiB2aWV3Qm94PSIwIDAgMjAwIDgwIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxyZWN0IHdpZHRoPSIyMDAiIGhlaWdodD0iODAiIGZpbGw9IndoaXRlIiBzdHJva2U9ImJsYWNrIiBzdHJva2Utd2lkdGg9IjIiLz48dGV4dCB4PSIxMCIgeT0iMjAiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCI+QzwvdGV4dD48dGV4dCB4PSIzMCIgeT0iMjAiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCI+eDwvdGV4dD48dGV4dCB4PSI2MCIgeT0iMjAiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCI+LTE8L3RleHQ+PHRleHQgeD0iODAiIHk9IjIwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTQiPi0yPC90ZXh0Pjx0ZXh0IHg9IjEwMCIgeT0iMjAiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCI+LTM8L3RleHQ+PHRleHQgeD0iMTIwIiB5PSIyMCIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjE0Ij4tNDwvdGV4dD48dGV4dCB4PSIzMCIgeT0iNDAiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCI+eTwvdGV4dD48dGV4dCB4PSI2MCIgeT0iNDAiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCI+MTwvdGV4dD48dGV4dCB4PSI4MCIgeT0iNDAiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCI+MjwvdGV4dD48dGV4dCB4PSIxMDAiIHk9IjQwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTQiPjM8L3RleHQ+PHRleHQgeD0iMTIwIiB5PSI0MCIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjE0Ij40PC90ZXh0Pjwvc3ZnPg==' alt='Table C' style='max-width: 200px; height: auto;'>",
-                "D. <img src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjgwIiB2aWV3Qm94PSIwIDAgMjAwIDgwIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxyZWN0IHdpZHRoPSIyMDAiIGhlaWdodD0iODAiIGZpbGw9IndoaXRlIiBzdHJva2U9ImJsYWNrIiBzdHJva2Utd2lkdGg9IjIiLz48dGV4dCB4PSIxMCIgeT0iMjAiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCI+RDwvdGV4dD48dGV4dCB4PSIzMCIgeT0iMjAiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCI+eDwvdGV4dD48dGV4dCB4PSI2MCIgeT0iMjAiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCI+MDwvdGV4dD48dGV4dCB4PSI4MCIgeT0iMjAiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCI+MjwvdGV4dD48dGV4dCB4PSIxMDAiIHk9IjIwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTQiPjQ8L3RleHQ+PHRleHQgeD0iMTIwIiB5PSIyMCIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjE0Ij42PC90ZXh0Pjx0ZXh0IHg9IjMwIiB5PSI0MCIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjE0Ij55PC90ZXh0Pjx0ZXh0IHg9IjYwIiB5PSI0MCIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjE0Ij42PC90ZXh0Pjx0ZXh0IHg9IjgwIiB5PSI0MCIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjE0Ij41PC90ZXh0Pjx0ZXh0IHg9IjEwMCIgeT0iNDAiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCI+NDwvdGV4dD48dGV4dCB4PSIxMjAiIHk9IjQwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTQiPjM8L3RleHQ+PC9zdmc+' alt='Table D' style='max-width: 200px; height: auto;'>"
+                "A. Discrete Random Variable",
+                "B. Random Variable",
+                "C. Continuous Random Variable",
+                "D. None of the above"
             ],
             correct: 0
         },
         {
-            question: "In this table, what is the domain of the function?", 
+            question: "Classify if the variable is discrete or continuous: Amount of paint utilized in a building project",
             options: [
-                "A. D: {2, 4, 6, 8, 10}",
-                "B. D: {a, b, c, d, e}",
-                "C. D: {1, 2, 3, 4, 5}",
-                "D. y = {1, 2, 3, 4, 5, a, b, c, d}"
-            ],
-            correct: 2
-        },
-        {
-            question: "Which of the following relations is/are function/s?",
-            options: [
-                "A. x = {(-1,2), (-3,4), (-1,7), (5,1)}",
-                "B. g = {(-3,2), (3,1), (-3,2), (5,7)}",
-                "C. h = {(6,1), (-2,3), (2, 6), (7, 2)}",
-                "D. y = {(2,3), (3,2), (-2,3), (3, -2)}"
-            ],
-            correct: 2
-        },
-        {
-            question: "Which of the following relations is/are function/s?",
-            options: [
-                "A. the rule which assigns to each person the name of his brother",
-                "B. the rule which assigns the name of teachers you have",
-                "C. the rule which assigns a pen and the color of its ink",
-                "D. the rule which assigns each person a surname"
-            ],
-            correct: 3
-        },
-        {
-            question: "A person can encode 1000 words in every hour of typing job. Which of the following expresses the total words W as a function of the number n of hours that the person can encode?",
-            options: [
-                "A. W(n) = 1000 + n",
-                "B. W(n) = 1000/n",
-                "C. W(n) = 1000n",
-                "D. W(n) = 1000 - n"
-            ],
-            correct: 2
-        },
-        {
-            question: "Judy is earning ₱300.00 per day for cleaning the house of Mrs. Perez and additional ₱25.00 for an hour of taking care Mrs. Perez's child. Express the total salary (S) of Judy including the time (h) spent for taking care the child.",
-            options: [
-                "A. S(h) = 300 + 25h",
-                "B. S(h) = 300 - 25h",
-                "C. S(h) = 300(25h)",
-                "D. S(h) = 300/25h"
-            ],
-            correct: 0
-        },
-        {
-            question: "Which of the following functions define the volume of a cube?",
-            options: [
-                "A. V = 3s, where s is the length of the edge",
-                "B. V = s³, where s is the length of the edge",
-                "C. V = 2s³, where s is the length of the edge",
-                "D. V = s/3, where s is the length of the edge"
+                "A. Discrete",
+                "B. Continuous"
             ],
             correct: 1
         },
         {
-            question: "Eighty meters of fencing is available to enclose the rectangular garden of Mang Gustin. Give a function A that can represent the area that can be enclosed in terms of x.",
+            question: "The following are examples of Continuous Random Variable except:",
             options: [
-                "A. A(x) = 40x - x²",
-                "B. A(x) = 80x - x²",
-                "C. A(x) = 40x² - x",
-                "D. A(x) = 80x² - x"
+                "A. Time of person can hold his/her breath",
+                "B. The height or weight of a person",
+                "C. Each person in a bus",
+                "D. Body temperature"
+            ],
+            correct: 2
+        },
+        {
+            question: "Classify if the variable is discrete or continuous: The number of deaths per year attributed to lung cancer.",
+            options: [
+                "A. Discrete",
+                "B. Continuous"
+            ],
+            correct: 0
+        },
+        {
+            question: "Classify if the variable is discrete or continuous: Number of gifts received by 20 students during Christmas season.",
+            options: [
+                "A. Discrete",
+                "B. Continuous"
             ],
             correct: 0
         }
     ],
     'module-2': [
         {
-            question: "The following are notations for composite functions EXCEPT,",
+            question: "The following are key concepts of Hypothesis Testing, except:",
             options: [
-                "A. h(p(x))",
-                "B. f(x)g(x)",
-                "C. (s ∘ t)(x)",
-                "D. f(g(x))"
+                "A. It is a decision-making process for evaluating claims about a population.",
+                "B. It is done by making conclusions without analyzing data.",
+                "C. It involves testing an assumption we make about a population.",
+                "D. A hypothesis is an assumption about a population parameter that may or may not be true."
             ],
             correct: 1
         },
         {
-            question: "Find h(3) + d(2) if h(x) = x - 1 and d(x) = 7x + 3",
+            question: "What is an Alternative Hypothesis?",
             options: [
-                "A. 2",
-                "B. 5",
-                "C. 14",
-                "D. 19"
+                "A. A statement claiming that there is no effect or no difference.",
+                "B. A statement suggesting that there is an effect, change, or significant difference.",
+                "C. A statement that must always be accepted without testing.",
+                "D. A statement that is never compared to the null hypothesis."
+            ],
+            correct: 1
+        },
+        {
+            question: "The following describe the Null Hypothesis, except:",
+            options: [
+                "A. It states that the independent variable has no effect on the dependent variable.",
+                "B. It predicts no significant difference, no change, or no relationship.",
+                "C. It is the initial claim being tested.",
+                "D. It is always the claim that there is a significant effect or difference."
             ],
             correct: 3
         },
         {
-            question: "t(x) = -x² + 7x + 1 and r(x) = 5x² - 2x + 8, find (t - r)(2)",
+            question: "The average age of bus drivers in Metro Manila is 38.8 years. Which of the following is the correct pair of null and alternative hypotheses?",
             options: [
-                "A. 18",
-                "B. -18",
-                "C. -13",
-                "D. 13"
-            ],
-            correct: 2
-        },
-        {
-            question: "f(x) = 4x + 2 and g(x) = 3x - 1, find (f - g)(4)",
-            options: [
-                "A. 0",
-                "B. -9",
-                "C. 7",
-                "D. -8"
-            ],
-            correct: 2
-        },
-        {
-            question: "If g(x) = x - 4 and f(x) = x + 5, Find f(x) ∘ g(x)",
-            options: [
-                "A. x² + x + 20",
-                "B. x² - x + 20",
-                "C. x² - x - 20",
-                "D. x² + x - 20"
-            ],
-            correct: 3
-        },
-        {
-            question: "Given h(n) = (n + 6)/(n - 4) and p(k) = (n + 6)/(n² + 4n - 32). Find h/p(k)",
-            options: [
-                "A. 1/(n + 8)",
-                "B. n - 8",
-                "C. 1/(n - 8)",
-                "D. n + 8"
-            ],
-            correct: 3
-        },
-        {
-            question: "If f(x) = 18x² and t(x) = 8x, find f/t(x)",
-            options: [
-                "A. 9x/4",
-                "B. 4x/9",
-                "C. 4/9x",
-                "D. 9/4x"
+                "A. H₀: μ = 38.8 years, H₁: μ ≠ 38.8 years",
+                "B. H₀: μ ≠ 38.8 years, H₁: μ ≠ 38.8 years",
+                "C. H₀: μ = 38.8 years, H₁: μ = 38.8 years",
+                "D. H₀: μ ≠ 38.8 years, H₁: μ = 38.8 years"
             ],
             correct: 0
         },
         {
-            question: "When f(x) = 3x - 5 and g(x) = 2x² - 5, find f(g(x))",
+            question: "The average number of calories in a low-calorie meal is at most 300. Which is the correct pair of hypotheses?",
             options: [
-                "A. x² + 2x + 3",
-                "B. 6x² - 20",
-                "C. 6x² + 20",
-                "D. 2x² + 6"
-            ],
-            correct: 1
-        },
-        {
-            question: "r(x) = x + 5 and q(x) = 2x² - 5, Find q(r(-2))",
-            options: [
-                "A. 8",
-                "B. -8",
-                "C. 13",
-                "D. -13"
+                "A. H₀: μ = 300 calories, H₁: μ ≠ 300 calories",
+                "B. H₀: μ = 300 calories, H₁: μ > 300 calories",
+                "C. H₀: μ ≤ 300 calories, H₁: μ > 300 calories",
+                "D. H₀: μ = 300 calories, H₁: μ = 300 calories"
             ],
             correct: 2
-        },
-        {
-            question: "Let f(x) = 3x + 8 and g(x) = x - 2. Find f(g(x))",
-            options: [
-                "A. 2x + 3",
-                "B. 2x - 3",
-                "C. 4x + 1",
-                "D. 3x + 2"
-            ],
-            correct: 3
         }
     ],
     'module-3': [
         {
-            question: "The following are notations for composite functions EXCEPT,",
+            question: "Parametric tests are…",
             options: [
-                "A. h(p(x))",
-                "B. f(x)g(x)",
-                "C. (s ○ t)(x)",
-                "D. f(g(x))"
+                "A. Statistical tests that do not assume anything about the population.",
+                "B. Statistical tests that assume the data follows a normal distribution and uses numerical (interval or ratio) data.",
+                "C. Tests used only for categorical data.",
+                "D. Tests that work only when the sample size is very small."
             ],
             correct: 1
         },
         {
-            question: "Find h(3) + d(2) if h(x) = x – 1 and d(x) = 7x + 3",
+            question: "Non-Parametric tests are…",
             options: [
-                "A. 2",
-                "B. 5",
-                "C. 14",
-                "D. 19"
-            ],
-            correct: 3
-        },
-        {
-            question: "t(x) = –x² + 7x + 1 and r(x) = 5x² – 2x + 8, find (t – r)(2).",
-            options: [
-                "A. 18",
-                "B. –18",
-                "C. –13",
-                "D. 13"
-            ],
-            correct: 2
-        },
-        {
-            question: "f(x) = 4x + 2 and g(x) = 3x – 1, find (f – g)(4).",
-            options: [
-                "A. 0",
-                "B. –9",
-                "C. 7",
-                "D. –8"
-            ],
-            correct: 2
-        },
-        {
-            question: "If g(x) = x – 4 and f(x) = x + 5 Find f(x) * g(x)",
-            options: [
-                "A. x² + x + 20",
-                "B. x² – x + 20",
-                "C. x² – x – 20",
-                "D. x² + x – 20"
-            ],
-            correct: 3
-        },
-        {
-            question: "Given h(n) = (n+6)/(n–4) and p(k) = (n+6)/(n²+4n–32). Find p/h (k).",
-            options: [
-                "A. 1/(n+8)",
-                "B. m – 8",
-                "C. 1/(n–8)",
-                "D. n + 8"
-            ],
-            correct: 3
-        },
-        {
-            question: "If f(x) = 18x² and t(x) = 8x, find f/t(x).",
-            options: [
-                "A. 9x",
-                "B. 4x/9",
-                "C. 4/x",
-                "D. 9x/4"
-            ],
-            correct: 0
-        },
-        {
-            question: "When f(x) = 3x – 5 and g(x) = 2x² – 5, find f(g(x)).",
-            options: [
-                "A. x² + 2x + 3",
-                "B. 6x² – 20",
-                "C. 6x² + 20",
-                "D. 2x² + 6"
+                "A. Tests that require data to be normally distributed.",
+                "B. Tests used when data do not follow a normal distribution or when using ordinal or categorical data.",
+                "C. Tests that only work with ratio data.",
+                "D. Tests that are always more accurate than parametric tests."
             ],
             correct: 1
         },
         {
-            question: "r(x) = x + 5 and q(x) = 2x² – 5, Find q(r(–2))",
+            question: "The following are characteristics of Parametric Tests, except:",
             options: [
-                "A. 8",
-                "B. –8",
-                "C. 13",
-                "D. –13"
+                "A. Uses interval or ratio data",
+                "B. Assumes normal distribution",
+                "C. Works best when there are extreme outliers",
+                "D. Typically used with larger samples (n > 30)"
             ],
             correct: 2
         },
         {
-            question: "Let f(x) = 3x + 8 and g(x) = x – 2. Find f(g(x)).",
+            question: "The following are characteristics of Non-Parametric Tests, except:",
             options: [
-                "A. 2x + 3",
-                "B. 2x – 3",
-                "C. 3x + 2",
-                "D. 3x + 4"
+                "A. Can be used with ordinal, interval, or ratio data",
+                "B. Does not require normal distribution",
+                "C. Does not require equal variances",
+                "D. Requires a very large sample (n > 30)"
+            ],
+            correct: 3
+        },
+        {
+            question: "The following are examples of Non-Parametric Tests, except:",
+            options: [
+                "A. Mann-Whitney U Test",
+                "B. Friedman's ANOVA",
+                "C. Wilcoxon Signed-Rank Test",
+                "D. Independent Samples t-Test"
             ],
             correct: 3
         }
     ],
     'module-4': [
         {
-            question: "For numbers 1 - 5 use the problem below: Emmanuel decided to put up a candy shop that sells a dairy chocolate that cost ₱135.00 per pack. The cost of making the chocolate is ₱90.00 and the operating expense is ₱4,500.00. Which of the following pertains to the profit function?",
+            question: "What is the main purpose of Simple Linear Regression?",
             options: [
-                "A. P(x) = 45x – 4,500",
-                "B. P(x) = 225x – 4,500",
-                "C. P(x) = 45x + 4,500",
-                "D. P(x) = 225x + 4,500"
-            ],
-            correct: 0
-        },
-        {
-            question: "How many packs of dairy chocolate must be sold to break even?",
-            options: [
-                "A. 50",
-                "B. 100",
-                "C. 150",
-                "D. 200"
+                "A. To compare three or more groups",
+                "B. To predict the value of one variable using another variable",
+                "C. To count how many items belong to each category",
+                "D. To measure how often an event happens"
             ],
             correct: 1
         },
         {
-            question: "Which value of x will make Emmanuel's candy shop suffer loss for selling packs of chocolates?",
+            question: "In Simple Linear Regression, what do we call the variable that we want to predict?",
             options: [
-                "A. x > 100",
-                "B. x ≤ 100",
-                "C. x < 100",
-                "D. x ≥ 100"
-            ],
-            correct: 2
-        },
-        {
-            question: "How many chocolate bars must be sold if Emmanuel wanted to earn a profit of ₱6,750.00?",
-            options: [
-                "A. 100",
-                "B. 150",
-                "C. 250",
-                "D. 350"
-            ],
-            correct: 2
-        },
-        {
-            question: "How much is the gain if Emmanuel sold 350 packs of chocolates?",
-            options: [
-                "A. ₱6,750.00",
-                "B. ₱9,750.00",
-                "C. ₱11,250.00",
-                "D. ₱15,250.00"
-            ],
-            correct: 2
-        },
-        {
-            question: "For numbers 6 - 10 use the problem below: Mariel wanted to avail a cellphone plan that offers a monthly fee of ₱2,500.00. It includes 240 minutes of call and charges ₱7.50 for each additional minute of usage. Which of the following pertains to the monthly cost function?",
-            options: [
-                "A. C(x) = 2,500 – 1800x",
-                "B. C(x) = 2,500 + 1800x",
-                "C. C(x) = 700 + 7.50x",
-                "D. C(x) = 700 – 7.50x"
-            ],
-            correct: 2
-        },
-        {
-            question: "What value of x will not require any additional charge in her monthly bill?",
-            options: [
-                "A. x > 240",
-                "B. x < 240",
-                "C. x ≥ 240",
-                "D. x ≤ 240"
-            ],
-            correct: 3
-        },
-        {
-            question: "How many additional minutes of call did she make, if she paid ₱2,800.00 in her monthly bill?",
-            options: [
-                "A. 20 minutes",
-                "B. 40 minutes",
-                "C. 60 minutes",
-                "D. 80 minutes"
+                "A. Independent variable",
+                "B. Dependent variable",
+                "C. Constant",
+                "D. Residual"
             ],
             correct: 1
         },
         {
-            question: "How much is her monthly cost incurred if she made an additional usage of 20 minutes of call?",
+            question: "What makes the \"line of best fit\" the best line in regression?",
             options: [
-                "A. ₱2,500.00",
-                "B. ₱2,600.00",
-                "C. ₱2,650.00",
-                "D. ₱3,350.00"
+                "A. It goes through every single data point",
+                "B. It has the smallest total distance from all data points",
+                "C. It connects only the highest and lowest points",
+                "D. It always starts at zero"
             ],
-            correct: 2
+            correct: 1
         },
         {
-            question: "How much will she need to pay from using a total of 350 minutes of call in one month?",
+            question: "Which of the following is the correct form of the simple linear regression equation?",
             options: [
-                "A. ₱950.00",
-                "B. ₱2,610.00",
-                "C. ₱3,325.00",
-                "D. ₱4,325.00"
+                "A. y = m + b",
+                "B. y' = a + bx",
+                "C. x = abx",
+                "D. x = amb"
             ],
-            correct: 2
+            correct: 1
+        },
+        {
+            question: "\"Regression analysis is a reliable statistical method for estimating how a response variable depends on one or more predictor variables.\" This statement is…",
+            options: [
+                "A. Incorrect",
+                "B. Correct",
+                "C. Partially correct",
+                "D. Can be correct"
+            ],
+            correct: 1
         }
     ],
     'module-5': [
         {
-            question: "For numbers 1–2 refer to problem below: Due to Typhoon Rosing the bus slows down the regular trip rate which results to additional 2 hours in covering a 140-km distance to its regular time. Write a function that expresses the time t as a function of regular rate r in travelling.",
+            question: "A Z-test is usually used when…",
             options: [
-                "A. t(r) = 140/r",
-                "B. t(r) = r/140",
-                "C. t(r) = 140 + 2/r",
-                "D. t(r) = r/140 + 2"
-            ],
-            correct: 0
-        },
-        {
-            question: "What function expresses the time as a function of rate during the typhoon?",
-            options: [
-                "A. t(r) = 140/r + 2",
-                "B. t(r) = r/140 + 2",
-                "C. t(r) = 140 + 2/r",
-                "D. t(r) = 140/r+2"
-            ],
-            correct: 0
-        },
-        {
-            question: "Which of the following is a rational function?",
-            options: [
-                "A. f(x) = √5",
-                "B. f(x) = (2x – 5)/(x – 1)",
-                "C. x + 4 ≥ (x + 2)/(x – 1)",
-                "D. (x – 8)/(4x) = 20"
+                "A. The sample size is very small (less than 30)",
+                "B. The population standard deviation is known",
+                "C. The data is made of categories",
+                "D. You want to compare more than two groups"
             ],
             correct: 1
         },
         {
-            question: "How will you classify y = (x² – 16)/(x + 4)?",
+            question: "A T-test is usually used when…",
             options: [
-                "A. Rational Equation",
-                "B. Rational Inequality",
-                "C. Rational Function",
-                "D. Rational Expression"
-            ],
-            correct: 2
-        },
-        {
-            question: "What symbol must be placed in the blank to make the sentence rational equation: ___ = (2x + 5)/8",
-            options: [
-                "A. f(x)",
-                "B. y",
-                "C. ≤",
-                "D. 3"
-            ],
-            correct: 3
-        },
-        {
-            question: "Which of the following is considered rational inequality?",
-            options: [
-                "A. √5 ≤ 5",
-                "B. y = (x + 15)/3",
-                "C. 8 ≥ (2x + 15)/14",
-                "D. x + 2 ≈ (x + 5)/4"
-            ],
-            correct: 2
-        },
-        {
-            question: "Which of the following is considered rational equation?",
-            options: [
-                "A. 5x + 8",
-                "B. (x² + 25)/(x + 5)",
-                "C. 6 = (√3x + 1)/(x + 2)",
-                "D. 3 = (4x + 1)/(2x + 2)"
-            ],
-            correct: 3
-        },
-        {
-            question: "In the equation: (2x + 3)/(2x + 2) = x + 8, what symbol must be replaced with 8 to make the equation rational function?",
-            options: [
-                "A. y",
-                "B. √5",
-                "C. ≤",
-                "D. 5x"
+                "A. The population standard deviation is unknown",
+                "B. The sample size is extremely large",
+                "C. Data has no variation",
+                "D. You already know everything about the population"
             ],
             correct: 0
         },
         {
-            question: "What symbol is present in the equation y = (√3x² + 3)/(2x + 2) for not considering it as rational function?",
+            question: "Which of the following is a similarity between a Z-test and a T-test?",
             options: [
-                "A. y",
-                "B. =",
-                "C. 2x + 2",
-                "D. √3x² + 3"
+                "A. Both are used to compare three or more groups",
+                "B. Both test whether a sample mean is significantly different",
+                "C. Both require a population standard deviation",
+                "D. Both can only be used for samples above 100"
             ],
-            correct: 3
+            correct: 1
         },
         {
-            question: "A delivery truck that will bring cargo will travel 80 kilometers. Which of the following expresses the velocity v as a function of travel time t in hours?",
+            question: "When deciding between a Z-test and a T-test, the most important factor is…",
             options: [
-                "A. v(t) = 80/t",
-                "B. v(t) = t/80",
-                "C. t(v) = 80/v",
-                "D. t(v) = v/80"
+                "A. The color of the graph",
+                "B. Whether the data is arranged alphabetically",
+                "C. Whether the population standard deviation is known",
+                "D. The name of the researcher"
+            ],
+            correct: 2
+        },
+        {
+            question: "A T-distribution is different from a Z-distribution because…",
+            options: [
+                "A. It is flatter and has heavier tails",
+                "B. It is shaped like a triangle",
+                "C. It never changes shape",
+                "D. It cannot be used for statistics"
             ],
             correct: 0
         }
@@ -1290,6 +1027,12 @@ document.addEventListener('DOMContentLoaded', function() {
         });
         
         loadUserData(mostRecentUser);
+        // Ensure preQuizCompleted is properly set
+        if (gameState.preQuizCompleted === undefined) {
+            gameState.preQuizCompleted = false;
+            console.log('preQuizCompleted was undefined, set to false');
+        }
+        console.log('Initial state - preQuizCompleted:', gameState.preQuizCompleted);
     }
     
     // Add test data for debugging (remove this in production)
@@ -1340,11 +1083,32 @@ document.addEventListener('DOMContentLoaded', function() {
         gameState.scores = {};
         gameState.totalQuizzes = 0;
         gameState.unlockedLevels = [1];
+        gameState.preQuizCompleted = false;
         calculateAccurateStats();
         updateUI();
         updateResultsPage();
         updatePerformancePage();
+        saveGameState();
         console.log('All data cleared. Current stats:', calculateAccurateStats());
+    };
+    
+    // Add a test function to manually show the pre-quiz modal
+    window.testPreQuizModal = function() {
+        console.log('Testing pre-quiz modal...');
+        console.log('gameState.preQuizCompleted:', gameState.preQuizCompleted);
+        console.log('Modal element exists:', !!document.getElementById('pre-quiz-modal'));
+        showPreQuizModal();
+    };
+    
+    // Add a function to reset pre-quiz status
+    window.resetPreQuiz = function() {
+        console.log('Resetting pre-quiz status...');
+        gameState.preQuizCompleted = false;
+        if (gameState.currentUserId && gameState.allUsers[gameState.currentUserId]) {
+            gameState.allUsers[gameState.currentUserId].preQuizCompleted = false;
+        }
+        saveGameState();
+        console.log('Pre-quiz status reset. preQuizCompleted:', gameState.preQuizCompleted);
     };
     
     // Add a function to run a complete test
@@ -1389,9 +1153,11 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Add navigation feedback
             if (pageId === 'quizzes') {
+                console.log('Quizzes clicked, preQuizCompleted:', gameState.preQuizCompleted);
                 if (gameState.preQuizCompleted) {
                     showPopup('Select a module to start your quiz! 📚', 'info');
                 } else {
+                    console.log('Showing pre-quiz modal...');
                     showPreQuizModal();
                     return; // Don't show the page yet, wait for pre-quiz completion
                 }
@@ -1408,7 +1174,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     
     // Set up module buttons
-    for (let i = 1; i <= 12; i++) {
+    for (let i = 1; i <= 5; i++) {
         const moduleButton = document.getElementById(`module-${i}-card`)?.querySelector('.module-button');
         if (moduleButton) {
             moduleButton.addEventListener('click', function() {
@@ -1422,9 +1188,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 // Show module-specific guidance
                 const moduleTitles = [
-                    'Functions', 'Evaluating Functions', 'Operations on Functions', 'Composition of Functions',
-                    'Rational Functions', 'Solving Rational Equations', 'Rational Inequalities', 'Domain and Range',
-                    'Intercepts and Asymptotes', 'Real-life Problems', 'One-to-One Functions', 'Inverse Functions'
+                    'Statistical Variables', 'Statistical Hypothesis', 'Parametric Test of Differential', 
+                    'Simple Linear Regression', 'Test of Relationship'
                 ];
                 
                 showPopup(`Starting Module ${moduleNumber}: ${moduleTitles[moduleNumber - 1]}! 🚀`, 'info');
@@ -1447,6 +1212,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     if (quizzesCard) {
         quizzesCard.addEventListener('click', function() {
+            console.log('Quizzes card clicked, preQuizCompleted:', gameState.preQuizCompleted);
             // Check if user is currently taking a quiz
             if (isUserCurrentlyTakingQuiz()) {
                 // Resume the current quiz
@@ -1459,6 +1225,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 showPage('quizzes');
                 showPopup('Select a module to start your quiz! 📚', 'info');
             } else {
+                console.log('Showing pre-quiz modal from home card...');
                 showPreQuizModal();
             }
         });
@@ -1580,6 +1347,17 @@ document.addEventListener('DOMContentLoaded', function() {
         cancelPreQuizBtn.addEventListener('click', hidePreQuizModal);
     }
     
+    // Post-quiz modal event listeners
+    const startPostQuizBtn = document.getElementById('start-post-quiz-btn');
+    if (startPostQuizBtn) {
+        startPostQuizBtn.addEventListener('click', startPostQuiz);
+    }
+    
+    const cancelPostQuizBtn = document.getElementById('cancel-post-quiz-btn');
+    if (cancelPostQuizBtn) {
+        cancelPostQuizBtn.addEventListener('click', hidePostQuizModal);
+    }
+    
     // Add popup for first-time users
     if (!gameState.playerName) {
         setTimeout(() => {
@@ -1613,6 +1391,10 @@ function createNewUser(playerName) {
         scores: {},
         totalQuizzes: 0,
         achievements: [],
+        preQuizCompleted: false,
+        preQuizScore: 0,
+        postQuizCompleted: false,
+        postQuizScore: 0,
         createdAt: now,
         lastPlayed: now
     };
@@ -1624,6 +1406,10 @@ function createNewUser(playerName) {
     gameState.scores = {};
     gameState.totalQuizzes = 0;
     gameState.achievements = [];
+    gameState.preQuizCompleted = false;
+    gameState.preQuizScore = 0;
+    gameState.postQuizCompleted = false;
+    gameState.postQuizScore = 0;
     
     
     saveGameState();
@@ -1647,7 +1433,36 @@ function hideUserSelectionModal() {
 
 // Show pre-quiz modal
 function showPreQuizModal() {
-    document.getElementById('pre-quiz-modal').style.display = 'flex';
+    console.log('showPreQuizModal called');
+    const modal = document.getElementById('pre-quiz-modal');
+    console.log('Modal element:', modal);
+    if (modal) {
+        // Remove inline style that might be hiding it
+        modal.removeAttribute('style');
+        // Set display and z-index
+        modal.style.display = 'flex';
+        modal.style.zIndex = '10000';
+        modal.style.position = 'fixed';
+        modal.style.top = '0';
+        modal.style.left = '0';
+        modal.style.width = '100%';
+        modal.style.height = '100%';
+        modal.style.background = 'rgba(0, 0, 0, 0.8)';
+        modal.style.justifyContent = 'center';
+        modal.style.alignItems = 'center';
+        console.log('Pre-quiz modal shown, display:', modal.style.display);
+        console.log('Modal computed style:', window.getComputedStyle(modal).display);
+        // Force visibility again after a short delay
+        setTimeout(() => {
+            if (window.getComputedStyle(modal).display !== 'flex') {
+                modal.style.display = 'flex';
+                console.log('Forced modal display to flex after timeout');
+            }
+        }, 50);
+    } else {
+        console.error('Pre-quiz modal element not found! Check if HTML has id="pre-quiz-modal"');
+        alert('Pre-quiz modal not found. Please check the console for details.');
+    }
 }
 
 // Hide pre-quiz modal
@@ -1658,181 +1473,208 @@ function hidePreQuizModal() {
 // Pre-quiz data
 const preQuizData = [
     {
-        question: "It is a rule that relates values from a set to second set of value.",
+        question: "Which of the following is a discrete random variable?",
         options: [
-            "a. Function",
-            "b. relation",
-            "c. composition"
+            "A. Height of a student",
+            "B. Amount of rainfall",
+            "C. Number of cars passing a point",
+            "D. Temperature of a room"
         ],
-        correct: 1, // Index of correct answer (0-based)
-        explanation: "A relation is a general rule that connects elements from one set to another. A function is a special type of relation where each input has exactly one output."
+        correct: 2 // C
     },
     {
-        question: "A relation where each element of the domain is related to only one value.",
+        question: "A teacher records the number of absences each student has in a month. What type of variable is the number of absences?",
         options: [
-            "a. Function",
-            "b. relation", 
-            "c. composition"
+            "A. Quantitative Continuous",
+            "B. Quantitative Discrete",
+            "C. Qualitative (Categorical)",
+            "D. Ordinal"
         ],
-        correct: 0,
-        explanation: "A function is a special type of relation where each input (domain element) corresponds to exactly one output (range element). This is the key characteristic that distinguishes functions from general relations."
+        correct: 1 // B
     },
     {
-        question: "A line that represents a graph is a function in the Cartesian plane.",
+        question: "A researcher wants to test whether the average test score of students this year is different from the national average of 75. Which of the following represents the correct null hypothesis (H₀)?",
         options: [
-            "a. Horizontal line test",
-            "b. straight line test",
-            "c. vertical line test"
+            "A. The average test score is greater than 75.",
+            "B. The average test score is less than 75.",
+            "C. The average test score is equal to 75.",
+            "D. The average test score is not equal to 75."
         ],
-        correct: 2,
-        explanation: "The vertical line test is used to determine if a graph represents a function. If any vertical line intersects the graph more than once, it's not a function because that would mean one input has multiple outputs."
+        correct: 2 // C
     },
     {
-        question: "Which of the following relations are functions?",
+        question: "A company states that the defect rate of their product is 5%. A researcher wants to test if the defect rate is actually higher than claimed. What is the correct alternative hypothesis (H₁)?",
         options: [
-            "a. (1,2) (3,2) (3,5)",
-            "b. (2,3) (1,4) (2,1)",
-            "c. (3,4) (2,3) (1,2)"
+            "A. p = 0.05",
+            "B. p < 0.05",
+            "C. p > 0.05",
+            "D. p ≠ 0.05"
         ],
-        correct: 2
+        correct: 2 // C
     },
     {
-        question: "Which of the following relations are not functions?",
+        question: "A researcher wants to compare the average test scores of two independent groups of students: one group used a traditional learning method, and the other used an online learning method. The data is normally distributed, and both groups have equal variances. Which parametric test should the researcher use?",
         options: [
-            "a. (1,5) (3,2) (3,5)",
-            "b. (4,3) (1,4) (2,1)",
-            "c. (3,4) (2,3) (1,2)"
+            "A. Paired t-test",
+            "B. Independent samples t-test",
+            "C. One-way ANOVA",
+            "D. Chi-square test"
         ],
-        correct: 0
+        correct: 1 // B
     },
     {
-        question: "Which of the following relations are functions?",
+        question: "A student scored 85 on a math exam. The class mean is 75 and the standard deviation is 5. What is the z-score of the student's score?",
         options: [
-            "a. (0,3) (3,2) (4,5)",
-            "b. (2,3) (1,4) (2,1)",
-            "c. (3,4) (2,3) (3,2)"
+            "A. 1.5",
+            "B. 2.0",
+            "C. 2.5",
+            "D. 3.0"
         ],
-        correct: 0
+        correct: 1 // B
     },
     {
-        question: "Which of the following represents a function?",
+        question: "Two students took different exams. Student A scored 90 on an exam with a mean of 80 and SD of 4. Student B scored 78 on an exam with a mean of 70 and SD of 6. Who performed better relative to their class?",
         options: [
-            "a. Y= 2x + 1",
-            "b. x² + y²=1",
-            "c. y = x² + y²"
+            "A. Student A",
+            "B. Student B",
+            "C. Both performed equally",
+            "D. Cannot be determined"
         ],
-        correct: 0
+        correct: 0 // A
     },
     {
-        question: "Which of the following is not a function?",
+        question: "A dataset has a mean of 100 and standard deviation of 10. Which of the following scores is considered an outlier using the ±3 SD rule?",
         options: [
-            "a. Y= 2x + 1",
-            "b. x² + y²=1",
-            "c. y = x²-2x+2"
+            "A. 125",
+            "B. 128",
+            "C. 130",
+            "D. 135"
         ],
-        correct: 1
+        correct: 3 // D
     },
     {
-        question: "Which of the following represents a function?",
+        question: "A researcher wants to examine whether the number of hours studied (independent variable) can predict a student's exam score (dependent variable). Which of the following statistical methods should the researcher use?",
         options: [
-            "a. Y=x²",
-            "b. 3x + y=1",
-            "c. y = x² + y²"
+            "A. Chi-square test",
+            "B. Simple linear regression",
+            "C. Paired t-test",
+            "D. One-way ANOVA"
         ],
-        correct: 1
+        correct: 1 // B
     },
     {
-        question: "Give a function C that can represent the cost of buying x meals, if one meal costs P40.",
+        question: "A researcher collects a sample of 25 students to test whether their average exam score differs from the national average of 70. The sample mean is 74, and the sample standard deviation is 8. Which statistic should the researcher calculate to determine if the sample mean is significantly different from the population mean?",
         options: [
-            "a. X = C (40)",
-            "b. C(x) = 40x",
-            "c. x (40) = C"
+            "A. Z-score",
+            "B. T-score",
+            "C. Chi-square",
+            "D. F-ratio"
         ],
-        correct: 1
+        correct: 1 // B
     }
 ];
 
-// Post-quiz data (appears after completing all 12 modules)
+// Post-quiz data (appears after completing all 5 modules)
 const postQuizData = [
     {
-        question: "What do you call a relation in which each element of the domain corresponds to exactly one element of the range?",
+        question: "Which of the following is a discrete random variable?",
         options: [
-            "A. Equation",
-            "B. Function",
-            "C. Real Numbers",
-            "D. Relation"
-        ],
-        correct: 1
-    },
-    {
-        question: "Which of the following relations are functions?",
-        options: [
-            "A. G= {(1,3), (1,4), (2,5), (2,6), (3,7)}",
-            "B. H= {(1,0), (0,1), (-1,0), (0,-1)}",
-            "C. I= {(-2,4), (-1,1), (0,0), (1,1), (2,4)}",
-            "D. J= {(1,1), (1,2), (1,3), (1,4), (1,5)}"
+            "A. Height of a student",
+            "B. Amount of rainfall",
+            "C. Number of cars passing a point",
+            "D. Temperature of a room"
         ],
         correct: 2
     },
     {
-        question: "Which is TRUE about function?",
+        question: "A teacher records the number of absences each student has in a month. What type of variable is the number of absences?",
         options: [
-            "A. Some functions are not relations",
-            "B. All functions are relations",
-            "C. All relations are functions",
-            "D. Not all functions are relations"
+            "A. Quantitative Continuous",
+            "B. Quantitative Discrete",
+            "C. Qualitative (Categorical)",
+            "D. Ordinal"
         ],
         correct: 1
     },
     {
-        question: "It is the set of outputs or the corresponding outcomes from the set of all values of x in a relation.",
+        question: "A researcher wants to test whether the average test score of students this year is different from the national average of 75. Which of the following represents the correct null hypothesis (H₀)?",
         options: [
-            "A. Domain",
-            "B. Range",
-            "C. Asymptote",
-            "D. Intercept"
+            "A. The average test score is greater than 75.",
+            "B. The average test score is less than 75.",
+            "C. The average test score is equal to 75.",
+            "D. The average test score is not equal to 75."
+        ],
+        correct: 2
+    },
+    {
+        question: "A company states that the defect rate of their product is 5%. A researcher wants to test if the defect rate is actually higher than claimed. What is the correct alternative hypothesis (H₁)?",
+        options: [
+            "A. p = 0.05",
+            "B. p < 0.05",
+            "C. p > 0.05",
+            "D. p ≠ 0.05"
+        ],
+        correct: 2
+    },
+    {
+        question: "A researcher wants to compare the average test scores of two independent groups of students: one group used a traditional learning method, and the other used an online learning method. The data is normally distributed, and both groups have equal variances. Which parametric test should the researcher use?",
+        options: [
+            "A. Paired t-test",
+            "B. Independent samples t-test",
+            "C. One-way ANOVA",
+            "D. Chi-square test"
         ],
         correct: 1
     },
     {
-        question: "The set of all possible values that the variable x can take in relation.",
+        question: "A student scored 85 on a math exam. The class mean is 75 and the standard deviation is 5. What is the z-score of the student's score?",
         options: [
-            "A. Domain",
-            "B. Range",
-            "C. Asymptote",
-            "D. Intercept"
+            "A. 1.5",
+            "B. 2.0",
+            "C. 2.5",
+            "D. 3.0"
+        ],
+        correct: 1
+    },
+    {
+        question: "Two students took different exams. Student A scored 90 on an exam with a mean of 80 and SD of 4. Student B scored 78 on an exam with a mean of 70 and SD of 6. Who performed better relative to their class?",
+        options: [
+            "A. Student A",
+            "B. Student B",
+            "C. Both performed equally",
+            "D. Cannot be determined"
         ],
         correct: 0
     },
     {
-        question: "Which of the following ordered pairs is just a relation?",
+        question: "A dataset has a mean of 100 and standard deviation of 10. Which of the following scores is considered an outlier using the ±3 SD rule?",
         options: [
-            "A. (-5, 2), (0, 2), (1, 2), (2, 2), (3, 2)",
-            "B. (-7, 4), (-2, 5), (-1, 6), (1, 7), (2, 8)",
-            "C. (2, -2), (3, -3), (4, 4), (5, -5), (6, 4)",
-            "D. (-1, 2), (-1, 1), (0, 0), (1, 2), (2, 2)"
+            "A. 125",
+            "B. 128",
+            "C. 130",
+            "D. 135"
         ],
         correct: 3
     },
     {
-        question: "Evaluate the function f(x)=x²-3x-10 if x=4.",
+        question: "A researcher wants to examine whether the number of hours studied (independent variable) can predict a student's exam score (dependent variable). Which of the following statistical methods should the researcher use?",
         options: [
-            "A. 1",
-            "B. 3",
-            "C. -4",
-            "D. -6"
+            "A. Chi-square test",
+            "B. Simple linear regression",
+            "C. Paired t-test",
+            "D. One-way ANOVA"
         ],
-        correct: 3
+        correct: 1
     },
     {
-        question: "Given f(x) = x³ and g(x) = x+7, what is f(x) + g(x)?",
+        question: "A researcher collects a sample of 25 students to test whether their average exam score differs from the national average of 70. The sample mean is 74, and the sample standard deviation is 8. Which statistic should the researcher calculate to determine if the sample mean is significantly different from the population mean?",
         options: [
-            "A. x³ - x - 7",
-            "B. -x³ - x - 7",
-            "C. -x³ + x - 7",
-            "D. x³ + x + 7"
+            "A. Z-score",
+            "B. T-score",
+            "C. Chi-square",
+            "D. F-ratio"
         ],
-        correct: 3
+        correct: 1
     }
 ];
 
@@ -2223,21 +2065,49 @@ function submitPreQuiz() {
         gameState.unlockedLevels.push(1);
     }
     
+    // Update user data
+    if (gameState.currentUserId && gameState.allUsers[gameState.currentUserId]) {
+        gameState.allUsers[gameState.currentUserId].preQuizCompleted = true;
+        gameState.allUsers[gameState.currentUserId].preQuizScore = percentage;
+        gameState.allUsers[gameState.currentUserId].unlockedLevels = gameState.unlockedLevels;
+    }
+    
     saveGameState();
     
-    // Show detailed results
-    showPopup(`🎉 Pre-quiz completed! You scored ${preQuizState.score}/${preQuizData.length} (${percentage}%)! Quiz 1 is now available!`, 'success');
-    
-    // Show the quizzes page first
-    showPage('quizzes');
+    // Show pre-quiz results page
+    showPreQuizResults(preQuizState.score, percentage);
     
     // Update the UI to show unlocked modules
     updateModuleCards();
+}
+
+// Show pre-quiz results page
+function showPreQuizResults(score, percentage) {
+    // Update results page with score
+    document.getElementById('pre-quiz-final-score').textContent = percentage + '%';
+    document.getElementById('pre-quiz-correct-answers').textContent = score + '/' + preQuizData.length;
+    document.getElementById('pre-quiz-percentage').textContent = percentage + '%';
     
-    // Automatically start Quiz 1 (Module 1) after a short delay
-    setTimeout(() => {
-        startQuiz('module-1');
-    }, 3000); // Wait 3 seconds to show the success message and updated quizzes page
+    // Set score message based on performance
+    const scoreMessage = document.getElementById('pre-quiz-score-message');
+    const scoreDescription = document.getElementById('pre-quiz-score-description');
+    
+    if (percentage >= 90) {
+        scoreMessage.textContent = 'Excellent! 🌟';
+        scoreDescription.textContent = 'Outstanding performance! You\'re ready for the quizzes!';
+    } else if (percentage >= 70) {
+        scoreMessage.textContent = 'Good Job! 👍';
+        scoreDescription.textContent = 'Well done! You\'re ready to start the module quizzes!';
+    } else if (percentage >= 50) {
+        scoreMessage.textContent = 'Not Bad! 💪';
+        scoreDescription.textContent = 'You can improve, but you\'re ready to continue!';
+    } else {
+        scoreMessage.textContent = 'Keep Learning! 📚';
+        scoreDescription.textContent = 'Review the lessons and try again when ready!';
+    }
+    
+    // Show the results page
+    showPage('pre-quiz-results');
 }
 
 // POST-QUIZ FUNCTIONS
@@ -2578,27 +2448,81 @@ function submitPostQuiz() {
     gameState.postQuizScore = percentage;
     saveGameState();
     
-    // Show detailed results
-    showPopup(`🎓 POST-QUIZ completed! You scored ${postQuizState.score}/${postQuizData.length} (${percentage}%)! Congratulations on completing all modules!`, 'success');
-    
-    // Show the results page
-    showPage('results');
+    // Show the post-quiz results page
+    showPostQuizResults();
     
     // Update the UI
     updateUI();
 }
 
+// Show post-quiz results
+function showPostQuizResults() {
+    showPage('post-quiz-results');
+    const percentage = Math.round((postQuizState.score / postQuizData.length) * 100);
+    document.getElementById('post-quiz-final-score').textContent = `${percentage}%`;
+    document.getElementById('post-quiz-correct-answers').textContent = `${postQuizState.score}/${postQuizData.length}`;
+    document.getElementById('post-quiz-percentage').textContent = `${percentage}%`;
+
+    let message = "Keep Learning! 📚";
+    let description = "You completed the post-quiz. Great effort!";
+    if (percentage >= 90) {
+        message = "Excellent! 🌟";
+        description = "You aced the post-quiz! Outstanding performance!";
+    } else if (percentage >= 70) {
+        message = "Good Job! 👍";
+        description = "You passed the post-quiz. Well done!";
+    } else if (percentage >= 50) {
+        message = "Not Bad! 💪";
+        description = "You completed the post-quiz. Keep practicing!";
+    }
+    document.getElementById('post-quiz-score-message').textContent = message;
+    document.getElementById('post-quiz-score-description').textContent = description;
+    document.getElementById('post-quiz-status').textContent = "Completed";
+}
+
+// Show post-quiz modal
+function showPostQuizModal() {
+    const modal = document.getElementById('post-quiz-modal');
+    if (modal) {
+        modal.style.display = 'flex';
+        modal.style.visibility = 'visible';
+        modal.style.opacity = '1';
+        modal.style.zIndex = '9999'; // Ensure it's on top
+        console.log('Post-quiz modal shown');
+    } else {
+        console.error('Post-quiz modal element not found!');
+    }
+}
+
+// Hide post-quiz modal
+function hidePostQuizModal() {
+    const modal = document.getElementById('post-quiz-modal');
+    if (modal) {
+        modal.style.display = 'none';
+        console.log('Post-quiz modal hidden');
+    }
+}
+
+// Start post-quiz from modal
+function startPostQuiz() {
+    hidePostQuizModal();
+    initializePostQuiz();
+    showPostQuizPage();
+}
+
 // Check if all modules are completed and show post-quiz
 function checkForPostQuiz() {
-    // Check if all 12 modules are unlocked (completed at least once)
-    const allModulesUnlocked = gameState.unlockedLevels.length === 12;
+    // Check if all 5 modules are unlocked (completed at least once)
+    const allModulesUnlocked = gameState.unlockedLevels.length >= 5 && 
+                                gameState.unlockedLevels.includes(1) &&
+                                gameState.unlockedLevels.includes(2) &&
+                                gameState.unlockedLevels.includes(3) &&
+                                gameState.unlockedLevels.includes(4) &&
+                                gameState.unlockedLevels.includes(5);
     
     if (allModulesUnlocked && !gameState.postQuizCompleted) {
-        showPopup('🎓 Congratulations! You have completed all 12 modules! Ready for the POST-QUIZ?', 'info');
-        setTimeout(() => {
-            initializePostQuiz();
-            showPostQuizPage();
-        }, 2000);
+        // Show the post-quiz modal notification
+        showPostQuizModal();
     }
 }
 
@@ -2731,7 +2655,7 @@ function updatePlayerDisplay() {
 
 // Update module cards
 function updateModuleCards() {
-    for (let i = 1; i <= 12; i++) {
+    for (let i = 1; i <= 5; i++) {
         const moduleCard = document.getElementById(`module-${i}-card`);
         const moduleStatus = document.getElementById(`module-${i}-status`);
         const moduleBtn = document.getElementById(`module-${i}-btn`);
@@ -2879,7 +2803,7 @@ function goToNextLevel(currentLevel) {
     const moduleNumber = parseInt(currentLevel.replace('module-', ''));
     const nextModuleNumber = moduleNumber + 1;
     
-    if (nextModuleNumber <= 12) {
+    if (nextModuleNumber <= 5) {
         showPage(`module-${nextModuleNumber}-quiz`);
         initializeQuiz(`module-${nextModuleNumber}`);
     }
@@ -3134,17 +3058,16 @@ function updateLeaderboardModuleGrid() {
     if (!moduleGrid) return;
     
     const moduleTitles = [
-        'Functions', 'Evaluating Functions', 'Operations on Functions', 'Composition of Functions',
-        'Rational Functions', 'Solving Rational Equations', 'Rational Inequalities', 'Domain and Range',
-        'Intercepts and Asymptotes', 'Real-life Problems', 'One-to-One Functions', 'Inverse Functions'
+        'Statistical Variables', 'Statistical Hypothesis', 'Parametric Test of Differential', 
+        'Simple Linear Regression', 'Test of Relationship'
     ];
     
     const moduleIcons = [
-        '🧮', '📊', '➕', '🔄', '📈', '⚖️', '📉', '🎯', '📐', '🌍', '🔗', '↩️'
+        '📊', '📈', '🔬', '📉', '🔗'
     ];
     
     let html = '';
-    for (let i = 1; i <= 12; i++) {
+    for (let i = 1; i <= 5; i++) {
         const moduleScore = gameState.scores[`module-${i}`];
         const isCompleted = moduleScore && moduleScore >= 70;
         const isLocked = i > Math.max(...gameState.unlockedLevels);
@@ -3201,7 +3124,7 @@ function loadGameState() {
             gameState.scores = user.scores;
             gameState.totalQuizzes = user.totalQuizzes;
             gameState.achievements = user.achievements;
-            gameState.preQuizCompleted = user.preQuizCompleted || false;
+            gameState.preQuizCompleted = user.preQuizCompleted === true; // Explicitly check for true, default to false
             gameState.preQuizScore = user.preQuizScore || 0;
             gameState.postQuizCompleted = user.postQuizCompleted || false;
             gameState.postQuizScore = user.postQuizScore || 0;
@@ -3281,6 +3204,16 @@ function handleNameCancel(event) {
 
 // Navigation functions
 function showPage(pageId) {
+    // Check for pre-quiz requirement before showing quizzes page
+    if (pageId === 'quizzes') {
+        console.log('showPage called for quizzes, preQuizCompleted:', gameState.preQuizCompleted);
+        if (!gameState.preQuizCompleted) {
+            console.log('Pre-quiz not completed, showing modal instead');
+            showPreQuizModal();
+            return; // Don't show the quizzes page
+        }
+    }
+    
     // Hide all pages and remove active class
     const pages = document.querySelectorAll('.page');
     pages.forEach(page => {
@@ -3365,6 +3298,9 @@ function startQuiz(moduleId) {
     currentQuiz.warned10 = false;
     currentQuiz.warned5 = false;
     
+    console.log(`Starting quiz for ${moduleId}`);
+    console.log(`Number of questions: ${currentQuiz.questions.length}`);
+    console.log(`First question:`, currentQuiz.questions[0]);
     
     showPage(`${moduleId}-quiz`);
     
@@ -3373,9 +3309,15 @@ function startQuiz(moduleId) {
         const questionContainer = document.getElementById(`${moduleId}-question-container`);
         const optionsContainer = document.getElementById(`${moduleId}-options-container`);
         
+        console.log(`Looking for containers: ${moduleId}-question-container and ${moduleId}-options-container`);
+        console.log(`Question container found:`, !!questionContainer);
+        console.log(`Options container found:`, !!optionsContainer);
+        
         if (questionContainer && optionsContainer) {
+            console.log('Containers found, displaying question...');
             displayQuestion(moduleId);
         } else {
+            console.log('Containers not found, retrying...');
             setTimeout(waitForDOM, 50);
         }
     };
@@ -3661,6 +3603,11 @@ function finishQuiz(moduleId) {
         completedModules[moduleId] = false;
     }
     
+    // Ensure current module is in unlockedLevels
+    if (!gameState.unlockedLevels.includes(moduleNumber)) {
+        gameState.unlockedLevels.push(moduleNumber);
+    }
+    
     // Unlock next level if quiz is completed (regardless of score)
     if (moduleNumber < 12) {
         if (!gameState.unlockedLevels.includes(moduleNumber + 1)) {
@@ -3713,7 +3660,7 @@ function continueToNextQuiz() {
         const currentModuleNumber = parseInt(currentQuiz.level.replace('module-', ''));
         
         // Look for the next module after the current one
-        for (let i = currentModuleNumber + 1; i <= 12; i++) {
+        for (let i = currentModuleNumber + 1; i <= 5; i++) {
             if (gameState.unlockedLevels.includes(i)) {
                 const moduleId = `module-${i}`;
                 const score = gameState.scores[moduleId] || 0;
@@ -3729,7 +3676,7 @@ function continueToNextQuiz() {
     
     // If no next module found after current one, look for any incomplete module
     if (!nextModuleNumber) {
-        for (let i = 1; i <= 12; i++) {
+        for (let i = 1; i <= 5; i++) {
             if (gameState.unlockedLevels.includes(i)) {
                 const moduleId = `module-${i}`;
                 const score = gameState.scores[moduleId] || 0;
@@ -3746,7 +3693,7 @@ function continueToNextQuiz() {
     // Check if we found a valid next module
     console.log('Next module number found:', nextModuleNumber);
     
-    if (nextModuleNumber && nextModuleNumber <= 12 && gameState.unlockedLevels.includes(nextModuleNumber)) {
+    if (nextModuleNumber && nextModuleNumber <= 5 && gameState.unlockedLevels.includes(nextModuleNumber)) {
         console.log('Starting next quiz:', `module-${nextModuleNumber}`);
         showPopup(`Starting Module ${nextModuleNumber}! 🚀`, 'info');
         // Start the next quiz automatically
@@ -3763,9 +3710,8 @@ function continueToNextQuiz() {
 function showQuizResults(moduleId, score, correctAnswers, totalQuestions) {
     const moduleNumber = parseInt(moduleId.split('-')[1]);
     const moduleTitles = [
-        'Functions', 'Evaluating Functions', 'Operations on Functions', 'Composition of Functions',
-        'Rational Functions', 'Solving Rational Equations', 'Rational Inequalities', 'Domain and Range',
-        'Intercepts and Asymptotes', 'Real-life Problems', 'One-to-One Functions', 'Inverse Functions'
+        'Statistical Variables', 'Statistical Hypothesis', 'Parametric Test of Differential', 
+        'Simple Linear Regression', 'Test of Relationship'
     ];
     
     // Calculate time taken accurately
@@ -3846,7 +3792,7 @@ function updateModuleBreakdownGrid(currentModule) {
     if (!breakdownGrid) return;
     
     let html = '';
-    for (let i = 1; i <= 12; i++) {
+    for (let i = 1; i <= 5; i++) {
         const moduleScore = gameState.scores[`module-${i}`];
         const isCompleted = moduleScore && moduleScore >= 70;
         const isCurrent = i === currentModule;
@@ -4354,28 +4300,20 @@ function updateModulePerformanceGrid() {
     if (!performanceStats) return;
     
     const moduleTitles = [
-        'Functions', 'Evaluating Functions', 'Operations on Functions', 'Composition of Functions',
-        'Rational Functions', 'Solving Rational Equations', 'Rational Inequalities', 'Domain and Range',
-        'Intercepts and Asymptotes', 'Real-life Problems', 'One-to-One Functions', 'Inverse Functions'
+        'Statistical Variables', 'Statistical Hypothesis', 'Parametric Test of Differential', 
+        'Simple Linear Regression', 'Test of Relationship'
     ];
     
     const moduleDescriptions = [
-        'Basic concepts of functions and relations',
-        'Evaluating functions at specific values',
-        'Adding, subtracting, multiplying, and dividing functions',
-        'Understanding function composition and its applications',
-        'Introduction to rational functions and their properties',
-        'Solving equations involving rational expressions',
-        'Solving inequalities with rational expressions',
-        'Finding domain and range of rational functions',
-        'Identifying intercepts, zeroes, and asymptotes',
-        'Applying rational functions to real-world problems',
-        'Understanding one-to-one functions and their properties',
-        'Finding inverse functions and their applications'
+        'Understanding discrete and continuous random variables',
+        'Understanding null and alternative hypotheses',
+        'Understanding parametric and non-parametric tests',
+        'Predicting variables using linear relationships',
+        'Understanding Z-tests and T-tests'
     ];
     
     let html = '';
-    for (let i = 1; i <= 12; i++) {
+    for (let i = 1; i <= 5; i++) {
         const moduleId = `module-${i}`;
         const moduleScore = gameState.scores[moduleId];
         const isCompleted = moduleScore && moduleScore >= 70;
